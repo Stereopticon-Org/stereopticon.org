@@ -1140,7 +1140,7 @@ function renderGame(slug){
         '<dt>Status</dt><dd>'+esc(g.status_text||ST[g.status].label)+'</dd>'+
         '<dt>API</dt><dd>'+esc(g.api)+'</dd>'+
         '<dt>Stereo</dt><dd>'+esc(SRC[g.source])+'</dd>'+
-        '<dt>Folder</dt><dd>'+(folders||'—')+'</dd>'+
+        '<dt>Folder</dt><dd>'+(folders||'None listed')+'</dd>'+
         (g.iz3d_profile===null?'':'<dt>iZ3D profile</dt><dd>'+(g.iz3d_profile?'Yes, from the original driver':'No')+'</dd>')+
         (g.link?'<dt>Project</dt><dd><a href="'+esc(g.link)+'" style="color:var(--accent)">Website</a></dd>':'')+'<dt>Reports</dt><dd>'+(reps.length?reps.length+(reps.length===1?' report':' reports'):'From the wiz3D test tables')+'</dd><dt>Data</dt><dd><a href="'+SITE_REPO+'/blob/main/games/'+g.slug+'.yml" style="color:var(--accent)">Edit on GitHub</a></dd></dl></section>'+
       '<section class="card"><h2>Stereo completeness</h2>'+bar(assessed?{working:passed,mostly:0,partial:CHECKS.length-passed,broken:0,untested:0}:{working:0,mostly:0,partial:0,broken:0,untested:0},'Completeness')+
