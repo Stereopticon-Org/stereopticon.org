@@ -1,0 +1,8 @@
+name: 'Alice: Madness Returns'
+api: DX9
+source: 3dv-auto
+status: mostly
+install:
+- Stereo-Injector/DX9/32-bit
+iz3d_profile: false
+notes: '`AllowNvidiaStereo3d=True` in `AliceEngine.ini`. Needs windows and shadow shader fix.'

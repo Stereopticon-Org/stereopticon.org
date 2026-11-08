@@ -1,0 +1,8 @@
+name: Portal
+api: DX9
+source: injector
+status: working
+install:
+- Stereo-Injector/DX9/32-bit
+iz3d_profile: true
+notes: Use `-game Portal -dx9` command line argument. Place files in `/portal/bin/` folder.

@@ -1,0 +1,9 @@
+name: Orbiter Space Flight Simulator
+api: DX9
+source: 3dv-auto
+status: untested
+install:
+- Stereo-Injector/DX9/64-bit
+iz3d_profile: false
+link: https://github.com/orbitersim/orbiter
+notes: '`Stereoscopic 3D` in settings.'

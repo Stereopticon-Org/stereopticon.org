@@ -1,0 +1,8 @@
+name: 'Deus Ex: Invisible War'
+api: DX8
+source: injector
+status: partial
+install:
+- Stereo-Injector/DX8
+iz3d_profile: false
+notes: Starts up, gets into menu on Linux.

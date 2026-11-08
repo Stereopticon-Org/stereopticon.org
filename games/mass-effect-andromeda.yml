@@ -1,0 +1,7 @@
+name: Mass Effect Andromeda
+api: DX10/11
+source: injector
+status: working
+install:
+- Stereo-Injector/DX10-11/64-bit
+iz3d_profile: false

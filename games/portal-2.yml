@@ -1,0 +1,8 @@
+name: Portal 2
+api: DX9
+source: injector
+status: mostly
+install:
+- Stereo-Injector/DX9/32-bit
+iz3d_profile: true
+notes: Place files in `/Portal 2/bin/` folder. Separation initially too high, needs wall display shader mod.

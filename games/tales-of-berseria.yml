@@ -1,0 +1,8 @@
+name: Tales of Berseria
+api: DX9
+source: injector
+status: mostly
+install:
+- Stereo-Injector/DX9/64-bit
+iz3d_profile: false
+notes: Not working in SR Weave output, working in other 3D outputs.

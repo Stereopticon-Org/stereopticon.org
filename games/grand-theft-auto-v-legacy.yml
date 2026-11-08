@@ -1,0 +1,8 @@
+name: Grand Theft Auto V (Legacy)
+api: DX10/11
+source: 3dv-auto
+status: working
+install:
+- Stereo-Injector/DX10-11/64-bit
+iz3d_profile: false
+notes: GTA 5 Story mode only, `-nobattleye` command line argument. PCSS shadows suggested.

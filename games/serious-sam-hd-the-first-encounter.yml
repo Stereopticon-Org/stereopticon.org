@@ -1,0 +1,7 @@
+name: 'Serious Sam HD: The First Encounter'
+api: DX10/11
+source: injector
+status: untested
+install:
+- Stereo-Injector/DX10-11/32-bit
+iz3d_profile: true

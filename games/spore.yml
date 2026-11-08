@@ -1,0 +1,7 @@
+name: Spore
+api: DX9
+source: injector
+status: untested
+install:
+- Stereo-Injector/DX9/32-bit
+iz3d_profile: true

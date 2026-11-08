@@ -1,0 +1,7 @@
+name: Tony Hawk's Pro Skater 3
+api: DX8
+source: injector
+status: untested
+install:
+- Stereo-Injector/DX8
+iz3d_profile: true

@@ -1,0 +1,8 @@
+name: Final Fantasy IX
+api: DX9
+source: injector
+status: partial
+install:
+- Stereo-Injector/DX9/64-bit
+iz3d_profile: false
+notes: Dual-View Output works, flat 3D though.

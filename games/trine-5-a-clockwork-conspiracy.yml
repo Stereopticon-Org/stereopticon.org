@@ -1,0 +1,8 @@
+name: 'Trine 5: A Clockwork Conspiracy'
+api: DX10/11
+source: injector
+status: mostly
+install:
+- Stereo-Injector/DX10-11/64-bit
+iz3d_profile: false
+notes: Raindrops hitting the ground make a puff of smoke in the right eye instead of ripples.

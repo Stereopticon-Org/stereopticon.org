@@ -1,0 +1,8 @@
+name: Castlevania Anniversary Collection
+api: DX9
+source: injector
+status: partial
+install:
+- Stereo-Injector/DX9/32-bit
+iz3d_profile: false
+notes: Collection runs stereo but inner emulated games render on a single plane (flat 2D). Needs a 2D-to-3D parallax primitive (planned 0.6.0+).

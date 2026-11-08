@@ -1,0 +1,9 @@
+name: Valkyria Chronicles
+api: DX9
+source: injector
+status: partial
+install:
+- Stereo-Injector/DX9/32-bit
+- 64-bit
+iz3d_profile: false
+notes: Needs UI, reflections and shadow shader fix

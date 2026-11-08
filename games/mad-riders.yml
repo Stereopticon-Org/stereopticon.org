@@ -1,0 +1,8 @@
+name: Mad Riders
+api: DX9
+source: injector
+status: working
+install:
+- Stereo-Injector/DX9/32-bit
+iz3d_profile: false
+notes: Might need shader fix.

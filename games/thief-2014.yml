@@ -1,0 +1,8 @@
+name: Thief (2014)
+api: HD3D
+source: hd3d
+status: working
+install:
+- HD3D/32-bit
+- HD3D/64-bit
+notes: Both x86 and x64 working.

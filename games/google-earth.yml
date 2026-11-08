@@ -1,0 +1,8 @@
+name: Google Earth
+api: DX9
+source: injector
+status: untested
+install:
+- Stereo-Injector/DX9/32-bit
+iz3d_profile: true
+notes: '[Google Earth Pro 7.1.5.1557](https://web.archive.org/web/20171014110844/https://dl.google.com/earth/client/GE7/release_7_1_8/googleearth-win-pro-7.1.8.3036.exe)'

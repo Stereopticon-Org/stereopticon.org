@@ -1,0 +1,7 @@
+name: Zombie Army Trilogy
+api: HD3D
+source: hd3d
+status: working
+install:
+- HD3D/32-bit
+notes: '[Depth Map Reprojection](https://www.pcgamingwiki.com/wiki/Glossary:Native_3D#Depth_Map_Reprojection).'

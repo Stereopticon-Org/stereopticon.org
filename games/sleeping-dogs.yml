@@ -1,0 +1,6 @@
+name: Sleeping Dogs
+api: HD3D
+source: hd3d
+status: working
+install:
+- HD3D/32-bit

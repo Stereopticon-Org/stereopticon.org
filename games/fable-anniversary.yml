@@ -1,0 +1,8 @@
+name: Fable Anniversary
+api: DX9
+source: injector
+status: partial
+install:
+- Stereo-Injector/DX9/32-bit
+iz3d_profile: false
+notes: Has artifacts, needs shader fix.

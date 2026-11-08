@@ -1,0 +1,120 @@
+name: Game test report
+description: Tell us how a game runs with wiz3D. Approved reports update stereopticon.org.
+title: "[Compat] "
+labels: ["compat-report"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for testing. A maintainer checks each report before it goes on the site.
+        Take a stereo screenshot in game with **Ctrl+F12**. Screenshots are saved to `My Pictures\wiz3D Screenshots\<Game>\`.
+  - type: input
+    id: game
+    attributes:
+      label: Game
+      description: The game's name as shown on stereopticon.org, or its full name if it isn't listed yet.
+      placeholder: Left 4 Dead 2
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: wiz3D version
+      placeholder: "0.4.3"
+    validations:
+      required: true
+  - type: input
+    id: folder
+    attributes:
+      label: Folder used
+      description: The wiz3D folder you copied next to the game's .exe.
+      placeholder: Stereo-Injector/DX9/32-bit
+    validations:
+      required: true
+  - type: dropdown
+    id: api
+    attributes:
+      label: API
+      options: [DX7, DX8, DX9, DX10/11, DX12, Vulkan, OpenGL, HD3D, "Not sure"]
+    validations:
+      required: true
+  - type: dropdown
+    id: output
+    attributes:
+      label: Output mode
+      options: [SRWeave, HalfSBS, FullSBS, HalfTAB, FullTAB, Anaglyph, RowIL, ColumnIL, Checker, Mirror, 3DVisionGlasses, Katanga, iZ3D]
+    validations:
+      required: true
+  - type: input
+    id: display
+    attributes:
+      label: Display or glasses
+      placeholder: Acer SpatialLabs View Pro 27, RTX 3080, driver 566.36
+  - type: dropdown
+    id: result
+    attributes:
+      label: Result
+      options: ["Working", "Mostly working", "Partial", "Not working"]
+    validations:
+      required: true
+  - type: dropdown
+    id: scene
+    attributes:
+      label: Scene depth
+      options: ["Not checked", "Correct", "Some issues", "Wrong"]
+      default: 0
+  - type: dropdown
+    id: hud
+    attributes:
+      label: HUD and menus
+      options: ["Not checked", "Correct", "Some issues", "Wrong"]
+      default: 0
+  - type: dropdown
+    id: shadows
+    attributes:
+      label: Shadows
+      options: ["Not checked", "Correct", "Some issues", "Wrong"]
+      default: 0
+  - type: dropdown
+    id: lighting
+    attributes:
+      label: Lighting and reflections
+      options: ["Not checked", "Correct", "Some issues", "Wrong"]
+      default: 0
+  - type: dropdown
+    id: post
+    attributes:
+      label: Post-processing
+      options: ["Not checked", "Correct", "Some issues", "Wrong"]
+      default: 0
+  - type: dropdown
+    id: cutscenes
+    attributes:
+      label: Cutscenes
+      options: ["Not checked", "Correct", "Some issues", "Wrong"]
+      default: 0
+  - type: textarea
+    id: notes
+    attributes:
+      label: What looks wrong
+      description: Effects at the wrong depth, crashes, settings you had to change, launch options.
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Stereo screenshot
+      description: |
+        Drag a wiz3D screenshot here. GitHub doesn't accept .jps or .pns files, so rename .jps to .jpg and .pns to .png first. The image data is the same.
+  - type: dropdown
+    id: layout
+    attributes:
+      label: Screenshot layout
+      description: How the two eyes are arranged in the image.
+      options: ["Left | Right", "Right | Left (cross-eyed)", "Top / bottom", "Parallel + Cross (L | R | L)"]
+      default: 0
+  - type: checkboxes
+    id: licence
+    attributes:
+      label: Licence
+      options:
+        - label: I agree that this report and my screenshots are published on stereopticon.org under CC BY 4.0.
+          required: true

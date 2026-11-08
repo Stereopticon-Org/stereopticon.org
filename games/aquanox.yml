@@ -1,0 +1,7 @@
+name: AquaNox
+api: DX8
+source: injector
+status: working
+install:
+- Stereo-Injector/DX8
+iz3d_profile: false

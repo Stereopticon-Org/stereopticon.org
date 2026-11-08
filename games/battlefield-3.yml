@@ -1,0 +1,7 @@
+name: Battlefield 3
+api: HD3D
+source: hd3d
+status: mostly
+install:
+- HD3D/32-bit
+notes: Campaign only. Strange depth issue in the game not seeming caused by wiz3D. Might need shader fix.

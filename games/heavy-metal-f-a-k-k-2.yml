@@ -1,0 +1,7 @@
+name: 'Heavy Metal: F.A.K.K.²'
+api: OpenGL
+source: ogl-qb
+status: untested
+install:
+- OpenGL-Quad-Buffer-Stereo/32-bit
+notes: Check [3D/VR Compatibility Database](https://airtable.com/appByPZJsOQSVGDID/shrAfMuGs1IOIEpRT?uMgeK=recx8IhEW9qN2VC6t) to enable the game's native stereo 3D.

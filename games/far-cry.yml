@@ -1,0 +1,9 @@
+name: Far Cry
+api: DX9
+source: injector
+status: broken
+install:
+- Stereo-Injector/DX9/32-bit
+- 64-bit
+iz3d_profile: true
+notes: Crashes on startup.

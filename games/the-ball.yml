@@ -1,0 +1,8 @@
+name: The Ball
+api: DX9
+source: injector
+status: mostly
+install:
+- Stereo-Injector/DX9/32-bit
+iz3d_profile: false
+notes: Ball shadow different in both eyes.

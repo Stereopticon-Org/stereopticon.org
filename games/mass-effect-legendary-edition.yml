@@ -1,0 +1,8 @@
+name: Mass Effect Legendary Edition
+api: DX10/11
+source: injector
+status: working
+install:
+- Stereo-Injector/DX10-11/64-bit
+iz3d_profile: false
+notes: Mass Effect 1, 2 and 3. Launcher window renders at 1440p when panel is sub-native, being refined.

@@ -1,0 +1,8 @@
+name: Resident Evil 4 (2005)
+api: DX9
+source: 3dv-auto
+status: working
+install:
+- Stereo-Injector/DX9/32-bit
+iz3d_profile: false
+notes: Pre-rendered FMV intro renders black (fine once in-game). Known XAudio2 shutdown-race on Alt-F4 is now filtered.

@@ -1,0 +1,8 @@
+name: Sonic R (2004)
+api: DX9
+source: injector
+status: mostly
+install:
+- Stereo-Injector/DX9/32-bit
+iz3d_profile: false
+notes: Needs coin depth shader fix. Use with [Sonic R Updater](https://github.com/cheatfreak47/SRUpdater).

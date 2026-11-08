@@ -1,0 +1,7 @@
+name: Return to Castle Wolfenstein
+api: OpenGL
+source: ogl-qb
+status: working
+install:
+- OpenGL-Quad-Buffer-Stereo/32-bit
+notes: Use instructions on [3D/VR Compatibility Database](https://airtable.com/appByPZJsOQSVGDID/shrAfMuGs1IOIEpRT?uMgeK=recIgh2WvNLp0VdKe) to enable the game's native stereo 3D.

@@ -1,0 +1,8 @@
+name: Fallout Shelter
+api: DX10/11
+source: injector
+status: working
+install:
+- Stereo-Injector/DX10-11/64-bit
+iz3d_profile: false
+notes: Unity engine. UI mono via universal UI-Default handler (0x449010EA PS).

@@ -1,0 +1,8 @@
+name: 'Naruto Shippuden: Ultimate Ninja Storm 3 Full Burst (2013)'
+api: DX9
+source: injector
+status: mostly
+install:
+- Stereo-Injector/DX9/32-bit
+iz3d_profile: false
+notes: Needs shader fix and swap eye.

@@ -1,0 +1,7 @@
+name: Just Cause 2
+api: DX10/11
+source: 3dv-auto
+status: untested
+install:
+- Stereo-Injector/DX10-11/32-bit
+iz3d_profile: true

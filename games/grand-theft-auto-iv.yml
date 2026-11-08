@@ -1,0 +1,8 @@
+name: Grand Theft Auto IV
+api: DX9
+source: 3dv-auto
+status: mostly
+install:
+- Stereo-Injector/DX9/32-bit
+iz3d_profile: true
+notes: '`-stereo` command line argument.<br>Needs GTA 4 shadows shader fix.'

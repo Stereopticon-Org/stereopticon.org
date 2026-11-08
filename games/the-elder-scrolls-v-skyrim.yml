@@ -1,0 +1,8 @@
+name: 'The Elder Scrolls V: Skyrim'
+api: DX9
+source: injector
+status: broken
+install:
+- Stereo-Injector/DX9/32-bit
+iz3d_profile: false
+notes: Enters main menu, freezes on level load.

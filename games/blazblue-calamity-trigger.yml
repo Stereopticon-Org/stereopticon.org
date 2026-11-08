@@ -1,0 +1,8 @@
+name: 'BlazBlue: Calamity Trigger'
+api: DX9
+source: injector
+status: mostly
+install:
+- Stereo-Injector/DX9/32-bit
+iz3d_profile: false
+notes: Needs sprite depth shader fix, use [Geo-11 Fix instead](https://helixmod.blogspot.com/2026/05/blazblue-calamity-trigger-dx11.html).

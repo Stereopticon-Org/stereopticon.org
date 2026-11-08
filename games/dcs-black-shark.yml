@@ -1,0 +1,8 @@
+name: 'DCS: Black Shark'
+api: DX10/11
+source: injector
+status: untested
+install:
+- Stereo-Injector/DX10-11/32-bit
+iz3d_profile: true
+notes: Single Player may be okay. Multiplayer not recommended.

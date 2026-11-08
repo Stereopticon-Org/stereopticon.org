@@ -1,0 +1,8 @@
+name: RefRain - prism memories -
+api: DX9
+source: injector
+status: partial
+install:
+- Stereo-Injector/DX9/32-bit
+iz3d_profile: false
+notes: Play with depth set low. Needs higher depth shader fix and issues with Simulated Reality output.

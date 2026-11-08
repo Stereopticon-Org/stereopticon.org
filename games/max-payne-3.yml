@@ -1,0 +1,8 @@
+name: Max Payne 3
+api: DX10/11
+source: 3dv-auto
+status: working
+install:
+- Stereo-Injector/DX10-11/32-bit
+iz3d_profile: false
+notes: DX11. `-stereo 1` command line argument.

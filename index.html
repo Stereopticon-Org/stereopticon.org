@@ -1,0 +1,1314 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stereopticon</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Stereopticon: open-source stereoscopic 3D, for every display. Home of wiz3D, Stereo Loom and the Stereopticon launcher.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%23171513'/%3E%3Cpath d='M64 353V219C64 163 100 149 158 149S251 163 251 219V375H86Q64 375 64 353Z' fill='%23ede6da'/%3E%3Cpath d='M261 375V219C261 163 297 149 355 149S448 163 448 219V353Q448 375 426 375Z' fill='%23ede6da'/%3E%3Cpath d='M64 300C110 270 160 268 251 290V375H86Q64 375 64 353Z' fill='%23c98a4b'/%3E%3Cpath d='M261 300C307 270 357 268 448 290V353Q448 375 426 375H261Z' fill='%23c98a4b'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Lora:ital,wght@1,400;1,500&display=swap">
+<style>
+/* Layout: one 1160px column; hero pairs thesis with the stereo-pair mark; projects follow the render pipeline left to right, then each gets its own band. */
+:root{
+  --bg:#171513; --surface:#201d1a; --deep:#100f0d;
+  --fg:#ede6da; --muted:rgba(237,230,218,.64); --line:rgba(237,230,218,.14); --line-strong:rgba(237,230,218,.26);
+  --accent:#c98a4b; --accent-fg:#171513; --rust:#d2694a;
+  --font-sans:"Geist",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --font-serif:"Lora",Georgia,"Times New Roman",serif;
+  --radius:10px;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#f6f0e7; --surface:#ede4d6; --deep:#e5d9c6;
+    --fg:#1f1c19; --muted:rgba(31,28,25,.7); --line:rgba(31,28,25,.14); --line-strong:rgba(31,28,25,.28);
+    --accent:#a35e23; --accent-fg:#f6f0e7; --rust:#b25e3b;
+    color-scheme:light;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f6f0e7; --surface:#ede4d6; --deep:#e5d9c6;
+  --fg:#1f1c19; --muted:rgba(31,28,25,.7); --line:rgba(31,28,25,.14); --line-strong:rgba(31,28,25,.28);
+  --accent:#a35e23; --accent-fg:#f6f0e7; --rust:#b25e3b;
+  color-scheme:light;
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+h1,h2,h3{text-wrap:balance;margin:0;font-weight:600}
+p{margin:0}
+
+.wrap{max-width:1160px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.serif{font-family:var(--font-serif);font-style:italic}
+.mono{font-family:var(--font-mono)}
+
+/* header */
+.site-header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.site-header .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px}
+.brand{display:flex;align-items:center;text-decoration:none}
+.brand svg{height:26px;width:auto;display:block}
+.nav{display:flex;align-items:center;gap:4px}
+.nav a.link{font-size:14px;color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px}
+.nav a.link:hover{color:var(--fg);background:var(--surface)}
+.icon-btn{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--fg);cursor:pointer}
+.icon-btn:hover{background:var(--surface)}
+.icon-btn svg{width:18px;height:18px}
+
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border-radius:8px;font:500 15px/1 var(--font-sans);text-decoration:none;border:1px solid transparent;cursor:pointer;white-space:nowrap}
+.btn svg{width:17px;height:17px;flex:none}
+.btn-primary{background:var(--accent);color:var(--accent-fg)}
+.btn-primary:hover{filter:brightness(1.08)}
+.btn-ghost{border-color:var(--line-strong);color:var(--fg);background:transparent}
+.btn-ghost:hover{background:var(--surface)}
+.btn-row{display:flex;flex-wrap:wrap;gap:12px}
+
+/* hero */
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:56px;align-items:center;padding-block:88px 72px}
+.hero h1{font-size:clamp(40px,6vw,68px);line-height:1.02;letter-spacing:-.035em}
+.hero .lede{font-size:clamp(19px,2vw,22px);line-height:1.5;color:var(--muted);max-width:34em}
+.hero-copy{display:flex;flex-direction:column;gap:28px;min-width:0}
+.license-line{font-family:var(--font-mono);font-size:13px;color:var(--muted)}
+.viewer{display:flex;flex-direction:column;gap:16px;align-items:center;min-width:0}
+.viewer-stage{width:100%;max-width:520px;aspect-ratio:400/244;display:grid;place-items:center}
+.viewer-stage svg{width:100%;height:100%;display:block}
+.viewer-stage .wiggle{height:100%;width:auto}
+.viewer-caption{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 16px;max-width:520px}
+.viewer-caption p{font-family:var(--font-serif);font-style:italic;font-size:15px;color:var(--muted);text-align:center;flex:1 1 260px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;padding:3px;gap:2px;background:var(--surface)}
+.seg button{font:500 13px/1 var(--font-sans);color:var(--muted);background:transparent;border:0;border-radius:6px;padding:0 12px;min-height:34px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--bg);color:var(--fg);box-shadow:0 0 0 1px var(--line)}
+@media (max-width:860px){.hero .wrap{grid-template-columns:1fr;gap:48px;padding-block:56px 48px}}
+
+/* sections */
+section.band{border-top:1px solid var(--line)}
+section.band > .wrap{padding-block:88px}
+.section-head{display:flex;flex-direction:column;gap:12px;max-width:44em;margin-bottom:44px}
+.section-head h2{font-size:clamp(30px,3.6vw,42px);letter-spacing:-.025em;line-height:1.1}
+.section-head p{color:var(--muted);font-size:18px}
+
+/* pipeline */
+.pipeline{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;position:relative}
+.stage{border:1px solid var(--line);background:var(--surface);border-radius:var(--radius);padding:28px;display:flex;flex-direction:column;gap:14px;min-width:0;position:relative}
+.stage-top{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px}
+.stage-mark{height:56px;display:flex;align-items:center}
+.stage-mark svg{height:56px;width:auto}
+.stage .step{font-family:var(--font-mono);font-size:12px;color:var(--muted)}
+.stage h3{font-size:26px;letter-spacing:-.02em}
+.stage p.desc{font-family:var(--font-serif);font-style:italic;font-size:17px;line-height:1.5;color:var(--muted)}
+.stage .meta{margin-top:auto;padding-top:10px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;font:500 12px/1 var(--font-mono);color:var(--fg);border:1px solid var(--line-strong);border-radius:999px;padding:6px 10px}
+.chip.accent{border-color:color-mix(in srgb,var(--accent) 55%,transparent);color:var(--accent)}
+.more{font-size:14px;font-weight:500;color:var(--accent);text-decoration:none;display:inline-flex;align-items:center;gap:6px;min-height:44px}
+.more:hover{text-decoration:underline;text-underline-offset:3px}
+.more svg{width:15px;height:15px}
+.pipeline .stage:not(:last-child)::after{content:"";position:absolute;right:-17px;top:50%;width:14px;height:14px;border-top:2px solid var(--accent);border-right:2px solid var(--accent);transform:translateY(-50%) rotate(45deg);z-index:1}
+@media (max-width:900px){
+  .pipeline{grid-template-columns:1fr;gap:28px}
+  .pipeline .stage:not(:last-child)::after{right:auto;left:50%;top:auto;bottom:-22px;transform:translateX(-50%) rotate(135deg)}
+}
+
+/* project detail bands */
+.project{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:56px;align-items:start}
+.project .visual{display:flex;align-items:center;justify-content:center;padding:40px;border-radius:var(--radius);background:var(--deep);border:1px solid var(--line);min-width:0}
+.project .visual svg{width:100%;height:auto;display:block}
+.project-body{display:flex;flex-direction:column;gap:22px;min-width:0}
+.project-body h2{font-size:clamp(30px,3.6vw,42px);letter-spacing:-.025em;line-height:1.1}
+.project-body .tag{font-family:var(--font-serif);font-style:italic;font-size:20px;color:var(--muted)}
+.project-body .copy{display:flex;flex-direction:column;gap:14px;max-width:38em}
+.facts{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 28px;border-top:1px solid var(--line)}
+.facts li{padding:14px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:2px;min-width:0}
+.facts .k{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.facts .v{font-size:15px}
+.band.alt{background:var(--surface)}
+.band.alt .visual{background:var(--bg)}
+.wiz-visual{--wm-fill:var(--fg);--wm-orbit:var(--accent);--wm-knock:var(--bg)}
+.wiz-visual .wm{max-width:420px}
+.wiz-visual .motto{font-family:var(--font-serif);font-style:italic;font-size:18px;color:var(--muted);text-align:center}
+.wiz-visual{flex-direction:column;gap:20px}
+.loom-visual svg{max-width:260px}
+.app-visual svg{max-width:260px}
+.status{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.status::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent)}
+@media (max-width:860px){
+  .project{grid-template-columns:1fr;gap:32px}
+  .facts{grid-template-columns:1fr}
+}
+
+/* outputs table */
+.table-box{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius)}
+table{width:100%;border-collapse:collapse;font-size:15px;min-width:560px}
+th,td{text-align:left;padding:14px 20px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:var(--surface)}
+tr:last-child td{border-bottom:0}
+td.who{font-family:var(--font-mono);font-size:13px;white-space:nowrap;color:var(--accent)}
+
+/* support */
+.support{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:56px;align-items:start}
+.support .copy{display:flex;flex-direction:column;gap:18px;max-width:38em}
+.support .copy p{color:var(--muted);font-size:17px}
+.support .copy p strong{color:var(--fg);font-weight:600}
+.ledger{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:28px;display:flex;flex-direction:column;gap:18px}
+.ledger h3{font-size:18px}
+.ledger ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.ledger li{display:flex;gap:12px;align-items:flex-start;font-size:15px;color:var(--muted)}
+.ledger li svg{flex:none;width:18px;height:18px;margin-top:3px;color:var(--accent)}
+.contact{display:flex;flex-wrap:wrap;align-items:center;gap:10px;border-top:1px solid var(--line);padding-top:18px;font-size:14px;color:var(--muted)}
+.contact code{font-family:var(--font-mono);font-size:14px;color:var(--fg);user-select:all}
+.copy-btn{font:500 13px/1 var(--font-sans);color:var(--fg);background:transparent;border:1px solid var(--line-strong);border-radius:6px;padding:0 10px;min-height:32px;cursor:pointer}
+.copy-btn:hover{background:var(--bg)}
+@media (max-width:860px){.support{grid-template-columns:1fr;gap:32px}}
+
+/* footer */
+footer{border-top:1px solid var(--line)}
+footer .wrap{padding-block:48px;display:grid;grid-template-columns:minmax(0,1.4fr) repeat(2,minmax(0,1fr));gap:40px}
+footer .brand svg{height:24px}
+footer .about{display:flex;flex-direction:column;gap:16px;font-size:14px;color:var(--muted);max-width:30em}
+footer h4{margin:0 0 12px;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+footer ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;font-size:14px}
+footer ul a{text-decoration:none}
+footer ul a:hover{color:var(--accent)}
+footer .lic{font-family:var(--font-mono);font-size:12px;color:var(--muted)}
+@media (max-width:760px){footer .wrap{grid-template-columns:1fr 1fr}footer .about{grid-column:1/-1}}
+
+/* ---- wiki: status tokens (semantic, separate from the copper accent) ---- */
+:root{
+  --st-working:#5cb98a; --st-mostly:#a6c45c; --st-partial:#e3b14d; --st-broken:#de6a4f; --st-untested:#6f685f;
+  --code-bg:#0e0d0c;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){--st-working:#2f8a5c;--st-mostly:#7d9a2e;--st-partial:#c28a17;--st-broken:#c24b30;--st-untested:#b3a896;--code-bg:#efe6d8}
+}
+:root[data-theme="light"]{--st-working:#2f8a5c;--st-mostly:#7d9a2e;--st-partial:#c28a17;--st-broken:#c24b30;--st-untested:#b3a896;--code-bg:#efe6d8}
+
+.nav a.link[aria-current="page"]{color:var(--fg);background:var(--surface)}
+.view[hidden]{display:none!important}
+.view-head{display:flex;flex-direction:column;gap:12px;max-width:46em;padding-block:64px 32px}
+.view-head h1{font-size:clamp(34px,4.6vw,52px);letter-spacing:-.03em;line-height:1.05}
+.view-head p{color:var(--muted);font-size:18px}
+.crumbs{font-size:14px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap}
+.crumbs a{color:var(--muted);text-decoration:none}
+.crumbs a:hover{color:var(--accent)}
+.block{display:flex;flex-direction:column;gap:20px;padding-block:24px 56px}
+.block > h2{font-size:clamp(24px,2.6vw,30px);letter-spacing:-.02em}
+.block > p.sub{color:var(--muted);max-width:44em;margin-top:-8px}
+.muted{color:var(--muted)}
+code,kbd{font-family:var(--font-mono);font-size:.88em}
+kbd{border:1px solid var(--line-strong);border-bottom-width:2px;border-radius:5px;padding:1px 6px;background:var(--surface);white-space:nowrap}
+:not(pre) > code{background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:1px 5px;overflow-wrap:anywhere}
+pre{margin:0;background:var(--code-bg);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;overflow-x:auto;font-family:var(--font-mono);font-size:13px;line-height:1.6}
+.prose{display:flex;flex-direction:column;gap:14px;max-width:44em}
+.prose a,.notes a,td a{color:var(--accent)}
+
+/* status pills + bars */
+.pill{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:500;white-space:nowrap;padding:4px 10px 4px 8px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+.pill::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--c,var(--st-untested))}
+.pill.lg{font-size:15px;padding:6px 14px 6px 11px}
+.s-working{--c:var(--st-working)} .s-mostly{--c:var(--st-mostly)} .s-partial{--c:var(--st-partial)} .s-broken{--c:var(--st-broken)} .s-untested{--c:var(--st-untested)}
+.bar{display:flex;height:10px;border-radius:999px;overflow:hidden;background:var(--line);width:100%}
+.bar span{display:block;height:100%;background:var(--c)}
+.bar span + span{box-shadow:-1px 0 0 var(--bg)}
+.bar.empty{background:repeating-linear-gradient(90deg,var(--line) 0 6px,transparent 6px 10px)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend span::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--c)}
+.legend b{color:var(--fg);font-weight:600;font-variant-numeric:tabular-nums}
+
+/* summary */
+.summary{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:32px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:28px}
+.big-stat{display:flex;flex-direction:column;gap:6px}
+.big-stat .n{font-size:56px;font-weight:600;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.big-stat .l{color:var(--muted);font-size:15px}
+.summary-bars{display:flex;flex-direction:column;gap:16px;min-width:0}
+@media (max-width:760px){.summary{grid-template-columns:1fr}}
+
+/* API support grid */
+.api-list{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.api-row{display:grid;grid-template-columns:minmax(150px,1.1fr) minmax(130px,.8fr) minmax(0,2.2fr) minmax(160px,1.2fr);gap:20px;align-items:center;padding:18px 22px;border-bottom:1px solid var(--line)}
+.api-row:last-child{border-bottom:0}
+.api-row.head{background:var(--surface);padding-block:12px;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.api-name{font-weight:600;font-size:16px}
+.api-name small{display:block;font-weight:400;font-size:13px;color:var(--muted);font-family:var(--font-mono)}
+.api-how{font-size:14px;color:var(--muted);min-width:0}
+.api-bar{display:flex;flex-direction:column;gap:6px;min-width:0}
+.api-bar .cap{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.state{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:500;white-space:nowrap}
+.state::before{content:"";width:10px;height:10px;border-radius:3px;background:var(--c);flex:none}
+.state.planned::before,.state.considering::before{background:transparent;border:2px dashed var(--c)}
+.state.good{--c:var(--st-working)} .state.partial{--c:var(--st-partial)} .state.progress{--c:var(--accent)} .state.planned{--c:var(--accent)} .state.considering{--c:var(--st-untested)}
+.api-group{padding:12px 22px;background:var(--surface);border-bottom:1px solid var(--line);font-size:13px;font-weight:600;color:var(--accent)}
+@media (max-width:900px){
+  .api-row{grid-template-columns:1fr auto;gap:10px 16px}
+  .api-row.head{display:none}
+  .api-how{grid-column:1/-1}
+  .api-bar{grid-column:1/-1}
+}
+
+/* filters + game table */
+.filters{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.field{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.field input,.field select{font:400 15px var(--font-sans);color:var(--fg);background:var(--surface);border:1px solid var(--line-strong);border-radius:8px;min-height:44px;padding:0 12px;letter-spacing:0;text-transform:none}
+.field.grow{flex:1 1 240px}
+.field.grow input{width:100%}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip-btn{display:inline-flex;align-items:center;gap:7px;font:500 13px var(--font-sans);color:var(--fg);background:transparent;border:1px solid var(--line-strong);border-radius:999px;min-height:36px;padding:0 12px;cursor:pointer}
+.chip-btn::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--c)}
+.chip-btn[aria-pressed="false"]{color:var(--muted);border-style:dashed}
+.chip-btn[aria-pressed="false"]::before{opacity:.35}
+.chip-btn .ct{font-variant-numeric:tabular-nums;color:var(--muted)}
+.result-count{font-size:14px;color:var(--muted)}
+.games td.name a{font-weight:500;text-decoration:none;color:var(--fg)}
+.games td.name a:hover{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.games td.api{font-family:var(--font-mono);font-size:13px;white-space:nowrap}
+.games td.src{font-size:13px;color:var(--muted)}
+.games td.notes{font-size:13px;color:var(--muted);max-width:32em}
+.games td{vertical-align:middle}
+.games table{min-width:0}
+@media (max-width:760px){.games .src,.games .notes{display:none}.games th,.games td{padding:12px 14px}}
+.excluded{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.excluded div{border:1px solid var(--line);border-radius:var(--radius);padding:18px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.excluded h3{font-size:14px;font-weight:600}
+.excluded p{font-size:14px;color:var(--muted)}
+
+/* game page */
+.game-head{display:flex;flex-direction:column;gap:16px;padding-block:48px 28px}
+.game-head h1{font-size:clamp(32px,4.4vw,48px);letter-spacing:-.03em;line-height:1.08}
+.game-grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:40px;align-items:start;padding-bottom:72px}
+.game-main,.game-side{display:flex;flex-direction:column;gap:32px;min-width:0}
+.card{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:24px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.card h2{font-size:18px}
+.kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px 18px;font-size:15px;margin:0}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;min-width:0;overflow-wrap:anywhere}
+p.notes{font-size:16px;line-height:1.65}
+.check-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.check-list li{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
+.check-list li:last-child{border-bottom:0}
+.check-list .v{color:var(--muted);font-size:13px}
+.shot-empty{border:1px dashed var(--line-strong);border-radius:var(--radius);padding:28px;display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.shot-empty h3{font-size:17px}
+.shot-empty p{color:var(--muted);font-size:15px;max-width:40em}
+.steps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px;font-size:15px}
+@media (max-width:900px){.game-grid{grid-template-columns:1fr}}
+
+/* viewer */
+.viewer3d{display:flex;flex-direction:column;gap:14px}
+.v-stage{position:relative;background:#000;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
+.v-stage canvas{display:block;width:100%;height:auto;max-width:100%}
+.v-stage:fullscreen{border-radius:0;border:0}
+.v-stage:fullscreen canvas{width:100vw;height:100vh;object-fit:contain}
+.v-tag{position:absolute;left:12px;top:12px;font:500 12px var(--font-mono);color:#ede6da;background:rgba(16,15,13,.72);border-radius:6px;padding:5px 8px;pointer-events:none}
+.v-bar{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;justify-content:space-between}
+.v-bar .seg{flex-wrap:wrap}
+.v-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.v-tools .btn{min-height:38px;padding:0 12px;font-size:14px}
+.v-hint{font-size:14px;color:var(--muted)}
+.file-btn{position:relative;overflow:hidden}
+.file-btn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+
+/* guide */
+.ladder{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;counter-reset:step}
+.ladder li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:18px;padding:20px 0;border-bottom:1px solid var(--line);counter-increment:step}
+.ladder li::before{content:counter(step);width:36px;height:36px;border-radius:50%;border:1px solid var(--accent);color:var(--accent);display:grid;place-items:center;font:600 15px var(--font-mono)}
+.ladder h3{font-size:18px;margin-bottom:6px}
+.ladder p{color:var(--muted);font-size:15px}
+.prims{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.prim{border:1px solid var(--line);border-radius:var(--radius);padding:20px;display:flex;flex-direction:column;gap:10px;min-width:0;background:var(--surface)}
+.prim-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.prim h3{font-family:var(--font-mono);font-size:15px;font-weight:500;color:var(--accent)}
+.prim .api-tag{font-size:12px;color:var(--muted);font-family:var(--font-mono)}
+.prim p{font-size:14px;color:var(--muted)}
+.prim pre{font-size:12px;padding:12px 14px;background:var(--bg)}
+@media (max-width:860px){.prims{grid-template-columns:1fr}}
+.callout{border:1px solid color-mix(in srgb,var(--accent) 45%,transparent);background:color-mix(in srgb,var(--accent) 8%,transparent);border-radius:var(--radius);padding:18px 20px;font-size:15px;max-width:52em}
+.toc{display:flex;flex-wrap:wrap;gap:8px}
+.toc a{font-size:14px;text-decoration:none;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:7px 12px}
+.toc a:hover{color:var(--fg);border-color:var(--line-strong)}
+td .yes{color:var(--st-working);font-weight:600}
+td .part{color:var(--st-partial);font-weight:600}
+td .no{color:var(--st-broken);font-weight:600}
+td .plan{color:var(--accent);font-weight:600}
+
+/* home teaser */
+.teaser{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:48px;align-items:center}
+.teaser .copy{display:flex;flex-direction:column;gap:16px}
+.teaser .copy p{color:var(--muted);font-size:17px}
+@media (max-width:860px){.teaser{grid-template-columns:1fr;gap:28px}}
+
+.mnav{display:none;position:relative}
+.mnav summary{list-style:none;display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 12px;border-radius:8px;border:1px solid var(--line);cursor:pointer;font-size:14px;font-weight:500}
+.mnav summary::-webkit-details-marker{display:none}
+.mnav .panel{position:absolute;right:0;top:48px;z-index:30;background:var(--surface);border:1px solid var(--line-strong);border-radius:10px;padding:6px;display:flex;flex-direction:column;min-width:210px;box-shadow:0 12px 32px rgba(0,0,0,.35)}
+.mnav .panel a{padding:11px 12px;border-radius:6px;text-decoration:none;color:var(--fg);font-size:15px}
+.mnav .panel a:hover,.mnav .panel a[aria-current="page"]{background:var(--bg)}
+@media (max-width:960px){.nav a.link{display:none}.mnav{display:block}}
+.wiz-type{margin:0;font-size:clamp(56px,8vw,88px);font-weight:700;letter-spacing:-.045em;line-height:1}
+.api-chips{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.api-chips li{font:500 12px var(--font-mono);border:1px solid var(--line-strong);border-radius:999px;padding:5px 10px;color:var(--muted)}
+</style>
+
+<!-- Shared artwork: Stereopticon stereoview card (round 7), Stereo Loom shuttle, wiz3D wordmark -->
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+<defs>
+<clipPath id="sv-l"><path d="M64.0 353.28 V218.72 C64.0 162.7 99.5 148.7 157.5 148.7 C215.5 148.7 251.0 162.7 251.0 218.7 V367.28 Q251.0 375.28 243.0 375.28 H86.0 Q64.0 375.28 64.0 353.28 Z"></path></clipPath>
+<clipPath id="sv-r"><path d="M261.0 367.28 V218.72 C261.0 162.7 296.5 148.7 354.5 148.7 C412.5 148.7 448.0 162.7 448.0 218.7 V353.28 Q448.0 375.28 426.0 375.28 H269.0 Q261.0 375.28 261.0 367.28 Z"></path></clipPath>
+<g id="eye-l"><g clip-path="url(#sv-l)"><rect x="64.0" y="148.72" width="187.0" height="226.56" fill="#ede6da"></rect><path d="M4.0 365.28 C36.8 365.3 36.8 257.3 69.5 257.3 C124.5 257.3 124.5 225.3 179.5 225.3 C234.5 225.3 234.5 263.3 289.5 263.3 C300.2 263.3 300.2 365.3 311.0 365.3 V575.28 H4.0 Z" fill="#dca06a"></path><path d="M4.0 365.28 C21.2 365.3 21.2 293.3 38.5 293.3 C83.5 293.3 83.5 271.3 128.5 271.3 C183.5 271.3 183.5 303.3 238.5 303.3 C274.8 303.3 274.8 365.3 311.0 365.3 V575.28 H4.0 Z" fill="#c98a4b"></path><path d="M4.0 365.28 C60.8 365.3 60.8 331.3 117.5 331.3 C177.5 331.3 177.5 345.3 237.5 345.3 C274.2 345.3 274.2 365.3 311.0 365.3 V575.28 H4.0 Z" fill="#8a5e33"></path></g></g>
+<g id="eye-r"><g clip-path="url(#sv-r)"><rect x="261.0" y="148.72" width="187.0" height="226.56" fill="#ede6da"></rect><path d="M201.0 365.28 C251.8 365.3 251.8 257.3 302.5 257.3 C357.5 257.3 357.5 225.3 412.5 225.3 C467.5 225.3 467.5 263.3 522.5 263.3 C515.2 263.3 515.2 365.3 508.0 365.3 V575.28 H201.0 Z" fill="#dca06a"></path><path d="M201.0 365.28 C227.2 365.3 227.2 293.3 253.5 293.3 C298.5 293.3 298.5 271.3 343.5 271.3 C398.5 271.3 398.5 303.3 453.5 303.3 C480.8 303.3 480.8 365.3 508.0 365.3 V575.28 H201.0 Z" fill="#c98a4b"></path><path d="M201.0 365.28 C257.8 365.3 257.8 331.3 314.5 331.3 C374.5 331.3 374.5 345.3 434.5 345.3 C471.2 345.3 471.2 365.3 508.0 365.3 V575.28 H201.0 Z" fill="#8a5e33"></path></g></g>
+<symbol id="lockup" viewBox="20 140 1385 236">
+<g transform="translate(220 262) scale(0.86) translate(-256 -262)"><use href="#eye-l"></use><use href="#eye-r"></use></g>
+<path style="fill:var(--fg)" d="M492.2 318.4Q479.0 318.4 469.4 313.75Q459.8 309.1 454.32500000000005 300.775Q448.85 292.45 447.95 281.35L467.75 280.15Q469.1 290.5 475.25 296.05Q481.4 301.6 492.5 301.6Q501.95 301.6 507.125 298.07500000000005Q512.3 294.55 512.3 287.8Q512.3 283.75 510.34999999999997 280.6Q508.4 277.45 502.85 274.75Q497.3 272.05 486.35 269.5Q473.15 266.5 465.2 262.675Q457.25 258.85 453.65 253.07500000000002Q450.05 247.3 450.05 238.60000000000002Q450.05 229.3 454.70000000000005 222.175Q459.35 215.05 467.9 211.07500000000002Q476.45 207.10000000000002 488.45 207.10000000000002Q501.2 207.10000000000002 510.125 211.675Q519.05 216.25 524.075 224.2Q529.1 232.15 530.3 242.5L510.65 243.4Q509.6 234.7 503.9 229.3Q498.2 223.9 488.15 223.9Q479.75 223.9 474.875 227.8Q470.0 231.7 470.0 237.85000000000002Q470.0 242.2 472.025 245.05Q474.05 247.9 479.3 250.0Q484.55 252.1 494.0 254.2Q508.25 257.35 516.65 261.925Q525.05 266.5 528.65 272.65Q532.25 278.8 532.25 286.75Q532.25 296.5 527.225 303.625Q522.2 310.75 513.2750000000001 314.575Q504.35 318.4 492.2 318.4Z M579.8000000000001 316.0Q567.8000000000001 316.0 562.1750000000001 310.525Q556.5500000000001 305.05 556.5500000000001 293.05V250.75H543.95V235.9H556.5500000000001V217.15H575.75V235.9H596.9000000000001V250.75H575.75V291.25Q575.75 296.95 578.225 299.04999999999995Q580.7 301.15 585.6500000000001 301.15H596.9000000000001V316.0Z M643.4 317.8Q631.4 317.8 622.55 312.625Q613.7 307.45 608.9000000000001 298.0Q604.1 288.55 604.1 275.95Q604.1 263.35 608.9000000000001 253.9Q613.7 244.45 622.475 239.275Q631.25 234.10000000000002 642.95 234.10000000000002Q654.35 234.10000000000002 662.9000000000001 239.20000000000002Q671.45 244.3 676.175 253.9Q680.9 263.5 680.9 277.0V281.35H624.05Q624.5 291.85 629.75 297.175Q635.0 302.5 643.55 302.5Q656.6 302.5 660.2 291.4L679.85 292.6Q676.55 304.3 666.875 311.05Q657.2 317.8 643.4 317.8ZM624.05 268.45H661.1Q660.35 258.7 655.475 253.975Q650.6 249.25 642.95 249.25Q635.15 249.25 630.2 254.2Q625.25 259.15 624.05 268.45Z M694.4 316.0V235.9H712.4L712.85 251.5Q715.25 243.4 719.9 239.65Q724.55 235.9 732.05 235.9H739.4V252.4H731.9Q722.75 252.4 718.175 256.525Q713.6 260.65 713.6 269.8V316.0Z M787.4 317.8Q775.4 317.8 766.55 312.625Q757.7 307.45 752.9000000000001 298.0Q748.1 288.55 748.1 275.95Q748.1 263.35 752.9000000000001 253.9Q757.7 244.45 766.475 239.275Q775.25 234.10000000000002 786.95 234.10000000000002Q798.35 234.10000000000002 806.9000000000001 239.20000000000002Q815.45 244.3 820.175 253.9Q824.9 263.5 824.9 277.0V281.35H768.05Q768.5 291.85 773.75 297.175Q779.0 302.5 787.55 302.5Q800.6 302.5 804.2 291.4L823.85 292.6Q820.55 304.3 810.875 311.05Q801.2 317.8 787.4 317.8ZM768.05 268.45H805.1Q804.35 258.7 799.475 253.975Q794.6 249.25 786.95 249.25Q779.15 249.25 774.2 254.2Q769.25 259.15 768.05 268.45Z M873.1999999999999 317.8Q861.35 317.8 852.425 312.625Q843.5 307.45 838.625 298.075Q833.75 288.7 833.75 275.95Q833.75 263.2 838.625 253.825Q843.5 244.45 852.425 239.275Q861.35 234.10000000000002 873.1999999999999 234.10000000000002Q885.05 234.10000000000002 893.9 239.275Q902.75 244.45 907.625 253.825Q912.5 263.2 912.5 275.95Q912.5 288.7 907.625 298.075Q902.75 307.45 893.9 312.625Q885.05 317.8 873.1999999999999 317.8ZM873.1999999999999 302.2Q882.35 302.2 887.45 295.29999999999995Q892.55 288.4 892.55 275.95Q892.55 263.5 887.45 256.6Q882.35 249.7 873.1999999999999 249.7Q863.9 249.7 858.8 256.6Q853.6999999999999 263.5 853.6999999999999 275.95Q853.6999999999999 288.4 858.8 295.29999999999995Q863.9 302.2 873.1999999999999 302.2Z M925.85 338.5V235.9H944.3000000000001L944.6 247.9Q948.0500000000001 241.15 954.35 237.625Q960.65 234.10000000000002 968.6 234.10000000000002Q980.0 234.10000000000002 987.575 239.72500000000002Q995.15 245.35000000000002 998.9 254.875Q1002.65 264.4 1002.65 275.95Q1002.65 287.5 998.825 296.95Q995.0 306.4 987.425 312.1Q979.85 317.8 968.45 317.8Q960.8000000000001 317.8 954.575 314.425Q948.35 311.05 945.0500000000001 305.05V338.5ZM963.95 302.2Q972.65 302.2 977.675 295.225Q982.7 288.25 982.7 275.95Q982.7 263.65 977.675 256.67499999999995Q972.65 249.7 963.95 249.7Q955.25 249.7 950.1500000000001 256.29999999999995Q945.0500000000001 262.9 945.0500000000001 275.95Q945.0500000000001 289.0 950.075 295.6Q955.1 302.2 963.95 302.2Z M1048.1 316.0Q1036.1 316.0 1030.475 310.525Q1024.85 305.05 1024.85 293.05V250.75H1012.25V235.9H1024.85V217.15H1044.05V235.9H1065.2V250.75H1044.05V291.25Q1044.05 296.95 1046.525 299.04999999999995Q1049.0 301.15 1053.95 301.15H1065.2V316.0Z M1077.05 316.0V235.9H1096.25V316.0ZM1076.7499999999998 225.25V208.15H1096.6999999999998V225.25Z M1149.1999999999998 317.8Q1137.1999999999998 317.8 1128.35 312.625Q1119.4999999999998 307.45 1114.6249999999998 298.0Q1109.7499999999998 288.55 1109.7499999999998 275.95Q1109.7499999999998 263.35 1114.6249999999998 253.9Q1119.4999999999998 244.45 1128.35 239.275Q1137.1999999999998 234.10000000000002 1149.1999999999998 234.10000000000002Q1164.4999999999998 234.10000000000002 1174.6249999999998 242.05Q1184.7499999999998 250.0 1186.55 264.25L1166.7499999999998 265.3Q1165.55 257.65 1160.8249999999998 253.67499999999998Q1156.1 249.7 1149.1999999999998 249.7Q1139.8999999999999 249.7 1134.7999999999997 256.6Q1129.6999999999998 263.5 1129.6999999999998 275.95Q1129.6999999999998 288.4 1134.7999999999997 295.29999999999995Q1139.8999999999999 302.2 1149.1999999999998 302.2Q1156.2499999999998 302.2 1160.975 298.15Q1165.6999999999998 294.1 1166.7499999999998 285.55L1186.55 286.45Q1184.8999999999999 300.85 1174.7749999999999 309.32500000000005Q1164.6499999999999 317.8 1149.1999999999998 317.8Z M1233.1999999999998 317.8Q1221.35 317.8 1212.4249999999997 312.625Q1203.4999999999998 307.45 1198.6249999999998 298.075Q1193.7499999999998 288.7 1193.7499999999998 275.95Q1193.7499999999998 263.2 1198.6249999999998 253.825Q1203.4999999999998 244.45 1212.4249999999997 239.275Q1221.35 234.10000000000002 1233.1999999999998 234.10000000000002Q1245.05 234.10000000000002 1253.8999999999999 239.275Q1262.7499999999998 244.45 1267.6249999999998 253.825Q1272.4999999999998 263.2 1272.4999999999998 275.95Q1272.4999999999998 288.7 1267.6249999999998 298.075Q1262.7499999999998 307.45 1253.8999999999999 312.625Q1245.05 317.8 1233.1999999999998 317.8ZM1233.1999999999998 302.2Q1242.35 302.2 1247.4499999999998 295.29999999999995Q1252.55 288.4 1252.55 275.95Q1252.55 263.5 1247.4499999999998 256.6Q1242.35 249.7 1233.1999999999998 249.7Q1223.8999999999999 249.7 1218.7999999999997 256.6Q1213.6999999999998 263.5 1213.6999999999998 275.95Q1213.6999999999998 288.4 1218.7999999999997 295.29999999999995Q1223.8999999999999 302.2 1233.1999999999998 302.2Z M1285.85 316.0V235.9H1303.25L1303.6999999999998 249.55Q1307.0 241.3 1313.375 237.70000000000002Q1319.75 234.10000000000002 1327.6999999999998 234.10000000000002Q1340.8999999999999 234.10000000000002 1347.9499999999998 242.57500000000002Q1355.0 251.05 1355.0 264.55V316.0H1335.8V270.7Q1335.8 260.5 1332.725 255.1Q1329.6499999999999 249.7 1321.85 249.7Q1314.05 249.7 1309.55 255.1Q1305.05 260.5 1305.05 270.7V316.0Z"></path>
+</symbol>
+<clipPath id="lv"><path d="M100.0 256 A199.7 199.7 0 0 1 412.0 256 A199.7 199.7 0 0 1 100.0 256 Z"></path></clipPath>
+<symbol id="loom" viewBox="88 96 360 320">
+<path d="M166 112 V400" style="stroke:var(--fg)" stroke-width="30" stroke-linecap="round"></path>
+<path d="M346 112 V400" style="stroke:var(--fg)" stroke-width="30" stroke-linecap="round"></path>
+<path d="M124.0 256 A183.6 183.6 0 0 1 388.0 256 A183.6 183.6 0 0 1 124.0 256 Z" style="fill:var(--knock);stroke:var(--knock)" stroke-width="24"></path>
+<path d="M340 256 H436" style="stroke:var(--knock)" stroke-width="38" stroke-linecap="round"></path>
+<path d="M330 256 H436" style="stroke:var(--accent)" stroke-width="14" stroke-linecap="round"></path>
+<path d="M124.0 256 A183.6 183.6 0 0 1 388.0 256 A183.6 183.6 0 0 1 124.0 256 Z" style="fill:var(--accent)"></path>
+<g clip-path="url(#lv)"><path d="M256 112 V400" style="stroke:var(--knock)" stroke-width="54"></path></g>
+<path d="M256 112 V400" style="stroke:var(--fg)" stroke-width="30" stroke-linecap="round"></path>
+</symbol>
+
+</defs>
+</svg>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Stereopticon home"><svg viewBox="0 0 1385 236" role="img" aria-label="Stereopticon"><use href="#lockup"></use></svg></a>
+    <nav class="nav" aria-label="Main">
+      <a class="link" href="#projects">Projects</a>
+      <a class="link" href="#compatibility">Compatibility</a>
+      <a class="link" href="#apis">API support</a>
+      <a class="link" href="#fixes">Fix guide</a>
+      <a class="link" href="#outputs">3D outputs</a>
+      <a class="link" href="#support">Support</a>
+      <a class="icon-btn gh-link" href="https://github.com/Stereopticon-Org" aria-label="Stereopticon on GitHub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg></a>
+      <details class="mnav"><summary aria-label="Menu"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>Menu</summary><div class="panel"><a href="#projects">Projects</a><a href="#compatibility">Compatibility</a><a href="#apis">API support</a><a href="#fixes">Fix guide</a><a href="#outputs">3D outputs</a><a href="#support">Support</a></div></details>
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch colour theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg></button>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<div class="view" data-view="home">
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-copy">
+        <span class="eyebrow">Open source · Stereoscopic 3D</span>
+        <h1>Open-source stereoscopic 3D, for every display.</h1>
+        <p class="lede">Stereopticon is the home of three open projects that put PC games into real stereo 3D: a wrapper that renders each eye, a weaver for glasses-free screens, and a launcher that ties them together.</p>
+        <div class="btn-row">
+          <a class="btn btn-primary" href="#projects">See the projects <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></a>
+          <a class="btn btn-ghost oc-link" href="https://opencollective.com/stereopticon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>Back the project</a>
+        </div>
+        <p class="license-line">wiz3D · LGPL-2.1 &nbsp;/&nbsp; Stereopticon · LGPL-2.1 &nbsp;/&nbsp; Stereo Loom · MIT</p>
+      </div>
+      <figure class="viewer" style="margin:0">
+        <div class="viewer-stage">
+          <svg id="pair" viewBox="56 140 400 244" role="img" aria-label="The Stereopticon mark: a stereoview card with rolling hills in two arched windows, drawn as a real left and right eye pair"><use href="#eye-l"></use><use href="#eye-r"></use></svg>
+          <svg id="wiggle" class="wiggle" viewBox="64 148.72 187 226.56" role="img" aria-label="The two views of the mark alternating quickly so the hills show depth" hidden><use href="#eye-l" id="wl"></use><use href="#eye-r" id="wr" transform="translate(-197 0)" visibility="hidden"></use></svg>
+        </div>
+        <figcaption class="viewer-caption">
+          <p id="view-note">This mark is a real stereo pair. Relax your eyes into parallel view and the far hills drop back.</p>
+          <div class="seg" role="group" aria-label="How to view the mark">
+            <button type="button" id="v-pair" aria-pressed="true">Pair</button>
+            <button type="button" id="v-wiggle" aria-pressed="false">Wiggle</button>
+          </div>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="band" id="projects">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">The projects</span>
+        <h2>From launch to light field, in three parts</h2>
+        <p>Each project works on its own. Together they cover the whole path from picking a game to seeing it in depth on your display.</p>
+      </div>
+      <div class="pipeline">
+        <article class="stage">
+          <div class="stage-top">
+            <div class="stage-mark"><svg viewBox="56 140 400 244" aria-hidden="true"><use href="#eye-l"></use><use href="#eye-r"></use></svg></div>
+            <span class="step">launch</span>
+          </div>
+          <span class="eyebrow">Launcher</span>
+          <h3>Stereopticon</h3>
+          <p class="desc">Universal stereo 3D gaming hub for games, mods, shaders and fixes.</p>
+          <div class="meta"><span class="chip">LGPL-2.1</span><a class="more" href="#launcher">Details <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></a></div>
+        </article>
+        <article class="stage">
+          <div class="stage-top">
+            <div class="stage-mark"><svg viewBox="0 0 64 48" aria-hidden="true" style="height:48px"><rect x="3" y="6" width="34" height="34" rx="6" fill="none" style="stroke:var(--fg)" stroke-width="3.5"></rect><rect x="27" y="6" width="34" height="34" rx="6" fill="none" style="stroke:var(--accent)" stroke-width="3.5"></rect></svg></div>
+            <span class="step">render</span>
+          </div>
+          <span class="eyebrow">Wrapper</span>
+          <h3>wiz3D</h3>
+          <p class="desc">Universal stereoscopic 3D wrapper for DirectX, OpenGL, HD3D and 3D Vision.</p>
+          <div class="meta"><span class="chip">LGPL-2.1</span><a class="more" href="#wiz3d">Details <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></a></div>
+        </article>
+        <article class="stage" style="--knock:var(--surface)">
+          <div class="stage-top">
+            <div class="stage-mark"><svg viewBox="0 0 360 320" aria-hidden="true"><use href="#loom"></use></svg></div>
+            <span class="step">display</span>
+          </div>
+          <span class="eyebrow">Weaver</span>
+          <h3>Stereo Loom</h3>
+          <p class="desc">Weaves any stereo format onto glasses-free 3D displays.</p>
+          <div class="meta"><span class="chip accent">MIT</span><a class="more" href="#stereo-loom">Details <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></a></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="band alt" id="wiz3d">
+    <div class="wrap project">
+      <div class="visual wiz-visual">
+        <p class="wiz-type">wiz3D</p>
+        <p class="motto">We See 3D</p>
+        <ul class="api-chips" aria-label="Supported APIs"><li>DX7</li><li>DX8</li><li>DX9</li><li>DX10</li><li>DX11</li><li>HD3D</li><li>3D Vision</li><li>OpenGL Quad-Buffer Stereo</li></ul>
+      </div>
+      <div class="project-body">
+        <span class="eyebrow">Wrapper · LGPL-2.1</span>
+        <h2>wiz3D</h2>
+        <p class="tag">A compatibility layer for stereoscopic 3D.</p>
+        <div class="copy">
+          <p>wiz3D sits between a game and the graphics API and renders the scene twice, once for each eye. It treats stereo the way Proton treats Windows games on Linux: one shared layer with per-game profiles, instead of a separate hack for every title.</p>
+          <p>It carries on the iZ3D driver lineage, rebuilt on the open iZ3D codebase. When a game needs help, fixes go into the engine first. Shader fixes are the last line of defence, and they live in the shared profile.</p>
+        </div>
+        <ul class="facts">
+          <li><span class="k">Graphics APIs</span><span class="v">DirectX 7 to 11 and OpenGL, with DX12 and Vulkan planned</span></li>
+          <li><span class="k">Stereo sources</span><span class="v">Its own injector, plus native HD3D, 3D Vision and OpenGL Quad-Buffer Stereo</span></li>
+          <li><span class="k">Platforms</span><span class="v">Windows, and Linux or Steam Deck through Proton</span></li>
+          <li><span class="k">Fixes</span><span class="v">Engine profiles, then CRC-keyed shader patches</span></li>
+          <li><span class="k">Output modes</span><span class="v">13, from SBS and anaglyph to SR weave and 3D Vision glasses</span></li>
+          <li><span class="k">Games listed</span><span class="v"><a href="#compatibility" style="color:var(--accent)">414 in the compatibility list</a></span></li>
+        </ul>
+        <div class="btn-row">
+          <a class="btn btn-primary gh-repo" data-repo="wiz3D" href="https://github.com/Stereopticon-Org/wiz3D/releases">Download wiz3D</a>
+          <a class="btn btn-ghost" href="#compatibility">Game compatibility</a>
+          <a class="btn btn-ghost gh-repo" data-repo="wiz3D" href="https://github.com/Stereopticon-Org/wiz3D">Source on GitHub</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="stereo-loom">
+    <div class="wrap project">
+      <div class="visual loom-visual" style="--knock:var(--deep)">
+        <svg viewBox="0 0 360 320" role="img" aria-label="Stereo Loom mark: a lens-shaped shuttle weaving through three warp threads"><use href="#loom"></use></svg>
+      </div>
+      <div class="project-body">
+        <span class="eyebrow">Weaver · MIT</span>
+        <h2>Stereo Loom</h2>
+        <p class="tag">Weaves any stereo format onto glasses-free 3D displays.</p>
+        <div class="copy">
+          <p>Eye-tracked 3D monitors expect their own interleaved image. Stereo Loom takes an ordinary side-by-side stereo picture and hands it to the display's weaver, so games and players that already output stereo just work.</p>
+          <p>It switches the display into 3D through the LeiaSR SDK directly, with no overlay window sitting on top of your game. It is MIT licensed so display makers and other projects can build it in.</p>
+        </div>
+        <ul class="facts">
+          <li><span class="k">Displays</span><span class="v">Acer SpatialLabs, Samsung Odyssey 3D</span></li>
+          <li><span class="k">Input</span><span class="v">Side-by-side stereo from wiz3D or any source</span></li>
+          <li><span class="k">Method</span><span class="v">LeiaSR SDK, no overlay</span></li>
+          <li><span class="k">Formerly</span><span class="v">SR Loom</span></li>
+        </ul>
+        <div class="btn-row">
+          <a class="btn btn-ghost gh-repo" data-repo="stereo-loom" href="https://github.com/Stereopticon-Org/Stereo-Loom">Source on GitHub</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band alt" id="launcher">
+    <div class="wrap project">
+      <div class="visual app-visual">
+        <svg viewBox="0 0 512 512" role="img" aria-label="Stereopticon app icon"><rect width="512" height="512" rx="112" fill="#171513"></rect><use href="#eye-l"></use><use href="#eye-r"></use></svg>
+      </div>
+      <div class="project-body">
+        <span class="eyebrow">Launcher · LGPL-2.1</span>
+        <h2>Stereopticon</h2>
+        <p class="tag">One place to play your library in 3D.</p>
+        <div class="copy">
+          <p>The Stereopticon app is a hub for stereo 3D gaming. It finds your games, sets up the right wrapper, mods, shaders and fixes for each one, and sends the output to whatever 3D display you own.</p>
+          <p>It is the friendly front end for wiz3D and Stereo Loom, so you can get a game running in depth without editing config files by hand.</p>
+        </div>
+        <span class="status">In development</span>
+        <div class="btn-row">
+          <a class="btn btn-ghost gh-repo" data-repo="stereopticon" href="https://github.com/Stereopticon-Org/Stereopticon">Follow on GitHub</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="compat-teaser">
+    <div class="wrap teaser">
+      <div class="copy">
+        <span class="eyebrow">Game compatibility</span>
+        <h2 style="font-size:clamp(30px,3.6vw,42px);letter-spacing:-.025em;line-height:1.1">Which games work, and how well</h2>
+        <p>Player-reported results for every game listed for wiz3D, with install folders, known issues and fixes.</p>
+        <div class="btn-row"><a class="btn btn-primary" href="#compatibility">Browse games</a><a class="btn btn-ghost" href="#apis">API support</a></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;min-width:0" id="home-compat"></div>
+    </div>
+  </section>
+
+  <section class="band alt" id="support">
+    <div class="wrap support">
+      <div class="copy">
+        <span class="eyebrow">Support the work</span>
+        <h2 style="font-size:clamp(30px,3.6vw,42px);letter-spacing:-.025em;line-height:1.1">Funded in the open</h2>
+        <p>Stereopticon is a small group of volunteers. Money goes to the projects, not to any one person, and pays for development time, test hardware and the occasional game licence for testing.</p>
+        <p>We are on <strong>Open Collective</strong>, fiscally hosted by <strong>Open Source Collective</strong>. Every donation and every expense is published, so you can see where your support goes.</p>
+        <div class="btn-row">
+          <a class="btn btn-primary oc-link" href="https://opencollective.com/stereopticon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>Back us on Open Collective</a>
+          <a class="btn btn-ghost" href="https://github.com/sponsors/effcol">Sponsor on GitHub</a>
+        </div>
+      </div>
+      <aside class="ledger" aria-labelledby="partners-h">
+        <h3 id="partners-h">Display makers and studios</h3>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>Sponsor development of support for your display or SDK.</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>Lend development hardware so we can test against it.</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>Ship wiz3D or Stereo Loom with your product under their open licences.</li>
+        </ul>
+        <div class="contact">
+          <span>Get in touch:</span>
+          <code id="contact-email">hello@stereopticon.org</code>
+          <button class="copy-btn" type="button" id="copy-email">Copy</button>
+        </div>
+      </aside>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== COMPATIBILITY ===================== -->
+<div class="view" data-view="compatibility" hidden>
+  <div class="wrap">
+    <div class="view-head">
+      <span class="eyebrow">wiz3D · Game compatibility</span>
+      <h1>Game compatibility</h1>
+      <p>Every game the community has listed for wiz3D, how well it runs in stereo, and which folder to install. Results come from player reports in the wiz3D repository.</p>
+    </div>
+
+    <div class="summary" id="compat-summary"></div>
+
+    <div class="block">
+      <div class="filters">
+        <label class="field grow" for="q">Search
+          <input id="q" type="search" placeholder="Game name" autocomplete="off">
+        </label>
+        <label class="field" for="f-api">API
+          <select id="f-api"></select>
+        </label>
+        <label class="field" for="f-src">Stereo source
+          <select id="f-src"></select>
+        </label>
+        <label class="field" for="f-sort">Sort
+          <select id="f-sort">
+            <option value="name">Name</option>
+            <option value="status">Best first</option>
+          </select>
+        </label>
+      </div>
+      <div class="chips" id="f-status" role="group" aria-label="Show statuses"></div>
+      <p class="result-count" id="result-count" aria-live="polite"></p>
+      <div class="table-box games">
+        <table>
+          <thead><tr><th scope="col">Game</th><th scope="col">API</th><th scope="col" class="src">Stereo source</th><th scope="col">Status</th><th scope="col" class="notes">Notes</th></tr></thead>
+          <tbody id="game-rows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="block" id="excluded-block">
+      <h2>Left out on purpose</h2>
+      <p class="sub">These games are not supported. Most have anti-cheat that could ban your account, or already output their own stereo 3D that works better.</p>
+      <div class="excluded" id="excluded"></div>
+    </div>
+
+    <div class="block">
+      <h2>Add or update a result</h2>
+      <p class="sub">Tested a game? Open an issue with the game, the wiz3D folder you used, your output mode and what you saw. A stereo screenshot helps a lot.</p>
+      <div class="btn-row"><a class="btn btn-primary" id="report-generic" href="https://github.com/Stereopticon-Org/wiz3D/issues/new">Report a test result</a><a class="btn btn-ghost" href="#fixes">Learn to fix a game</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== API SUPPORT ===================== -->
+<div class="view" data-view="apis" hidden>
+  <div class="wrap">
+    <div class="view-head">
+      <span class="eyebrow">wiz3D · Graphics APIs</span>
+      <h1>API support</h1>
+      <p>Where each graphics API stands in wiz3D today, and what is still to come. Bars show reported results for games on that path.</p>
+    </div>
+    <div class="legend" id="api-legend" style="margin-bottom:20px"></div>
+    <div class="api-list" id="api-list"></div>
+    <div class="block">
+      <h2>Release progress</h2>
+      <p class="sub">Milestones from the wiz3D repository, refreshed every day. Each bar is the share of a milestone's issues that are closed.</p>
+      <div id="roadmap"></div>
+    </div>
+    <div class="block">
+      <h2>How wiz3D gets stereo out of a game</h2>
+      <div class="prose">
+        <p><strong>Stereo injector.</strong> For games that were never made for 3D. wiz3D loads as a proxy DLL next to the game, finds the camera in the game's rendering, and draws the scene again from a second eye position.</p>
+        <p><strong>Native stereo capture.</strong> For games that already render two eyes for AMD HD3D, NVIDIA 3D Vision or OpenGL Quad-Buffer Stereo. wiz3D switches that rendering back on and sends both eyes to a modern output mode, so old 3D support works on today's displays.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== GAME PAGE ===================== -->
+<div class="view" data-view="game" hidden>
+  <div class="wrap" id="game-page"></div>
+</div>
+
+<!-- ===================== FIX GUIDE ===================== -->
+<div class="view" data-view="fixes" hidden>
+  <div class="wrap">
+    <div class="view-head">
+      <span class="eyebrow">wiz3D · Fix guide</span>
+      <h1>Making a game work in 3D</h1>
+      <p>Most games work with wiz3D's built-in engine profiles. When one effect is wrong, you can find the shader behind it and fix just that effect, with a few lines of XML and no restart.</p>
+      <nav class="toc" aria-label="On this page">
+        <a href="#fixes" data-jump="fx-ladder">The fix ladder</a>
+        <a href="#fixes" data-jump="fx-hunter">ShaderHunter keys</a>
+        <a href="#fixes" data-jump="fx-crc">What a CRC is</a>
+        <a href="#fixes" data-jump="fx-prims">Fix primitives</a>
+        <a href="#fixes" data-jump="fx-dx9">DX9, DX8 and DX7</a>
+        <a href="#fixes" data-jump="fx-dump">Dumping and tracing</a>
+        <a href="#fixes" data-jump="fx-submit">Submitting a fix</a>
+      </nav>
+    </div>
+
+    <section class="block" id="fx-ladder">
+      <h2>The fix ladder</h2>
+      <p class="sub">Work from the top. Each step is cheaper and safer than the one after it.</p>
+      <ol class="ladder">
+        <li><div><h3>Install from the compatibility list</h3><p>Find the game in <a href="#compatibility">Game compatibility</a> and copy the contents of the listed folder next to the game's <code>.exe</code>. Set the game to fullscreen at your display's resolution first.</p></div></li>
+        <li><div><h3>Let the engine profile do the work</h3><p><code>BaseProfile.xml</code> ships coverage for UE3, UE4, CryEngine, RAGE, Dunia, Snowdrop, id Tech 4 and 5 and more than 15 other engines. On DX10/11, 37 constant-buffer features edit the camera matrices before the right eye draws, so the game's own shaders produce correct stereo without changes.</p></div></li>
+        <li><div><h3>Tune depth before fixing anything</h3><p>Use <kbd>Numpad +</kbd> and <kbd>Numpad −</kbd> for separation, and <kbd>Shift</kbd> with the same keys for convergence. Save up to three presets on <kbd>Numpad 7</kbd>, <kbd>8</kbd> and <kbd>9</kbd>. Some "broken" games only need different convergence.</p></div></li>
+        <li><div><h3>Hunt the shader that is wrong</h3><p>Go to a scene with the broken effect and press <kbd>Ctrl</kbd>+<kbd>Numpad 0</kbd>. Step through this frame's shaders with <kbd>Numpad 1</kbd> and <kbd>Numpad 2</kbd>. When the broken effect disappears, you have found it. Press <kbd>Numpad 3</kbd> to save a report with its CRC and a ready-made fix skeleton.</p></div></li>
+        <li><div><h3>Try the one-line fix</h3><p>Most problems are HUD or 2D elements at the wrong depth. Add <code>&lt;SkipStereo/&gt;</code> for that CRC to draw it the same in both eyes. In hunt mode, <kbd>Numpad 4</kbd> does this for you and saves it to <code>UserProfile.xml</code>.</p></div></li>
+        <li><div><h3>Reach for a primitive</h3><p>If mono is wrong too, use a primitive that moves the shader's depth instead: sprite depth, a fixed depth, depth read from a constant buffer, or a per-eye UV shift. See the list below.</p></div></li>
+        <li><div><h3>Reload, check, share</h3><p>Press <kbd>Ctrl</kbd>+<kbd>F5</kbd> to reload <code>BaseProfile.xml</code> in game. When it looks right, send your <code>&lt;Profile&gt;</code> block as a GitHub issue or pull request so every player gets it in the next release.</p></div></li>
+      </ol>
+    </section>
+
+    <section class="block" id="fx-hunter">
+      <h2>ShaderHunter keys</h2>
+      <p class="sub">The same keys as HelixMod and 3Dmigoto, so shader hackers don't have to learn a new layout. Works on DX9 and DX11.</p>
+      <div class="table-box">
+        <table>
+          <thead><tr><th scope="col">Key</th><th scope="col">What it does</th><th scope="col">APIs</th></tr></thead>
+          <tbody>
+            <tr><td><kbd>Ctrl</kbd>+<kbd>Numpad 0</kbd></td><td>Enter or leave hunt mode. A HUNT strip shows at the bottom of the screen.</td><td>DX9, DX11</td></tr>
+            <tr><td><kbd>Numpad 1</kbd> / <kbd>Numpad 2</kbd></td><td>Previous or next shader. The selected one flashes on and off twice a second.</td><td>DX9, DX11</td></tr>
+            <tr><td><kbd>Numpad 3</kbd></td><td>Save a report to <code>wiz3D_Shaders\&lt;Game&gt;\Hunter\</code> with the disassembly, constant-buffer hints and a suggested fix.</td><td>DX9, DX11</td></tr>
+            <tr><td><kbd>Numpad 4</kbd></td><td>Force the selected shader to mono and save it to <code>UserProfile.xml</code>. Press again to undo.</td><td>DX9, DX11</td></tr>
+            <tr><td><kbd>Numpad 5</kbd></td><td>Switch between whole shaders and single draws, for shaders that draw several different things.</td><td>DX11</td></tr>
+            <tr><td><kbd>Ctrl</kbd>+<kbd>F5</kbd></td><td>Reload <code>BaseProfile.xml</code> without restarting the game.</td><td>All</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="block" id="fx-crc">
+      <h2>What a CRC is</h2>
+      <div class="prose">
+        <p>Every shader a game creates gets an ID: a CRC32 checksum of its bytecode, written as eight hex digits such as <code>0x1D9628E2</code>. Fixes are keyed to that ID, so a fix applies to exactly one shader and nothing else.</p>
+        <p>wiz3D uses the standard IEEE CRC32 on both DX9 and DX11. It matches HelixMod's DX9 file names, so you can look up a CRC from a HelixMod fix list without re-hashing.</p>
+        <p>3Dmigoto and geo-11 use a different 64-bit hash, written as 16 hex digits. Those IDs do not match wiz3D's, even for the same shader.</p>
+      </div>
+      <pre>&lt;Profile Name="Example Game"&gt;
+    &lt;File Name="game.exe"/&gt;
+    &lt;ShaderPatch CRC="0x1D9628E2" Stage="VS" Note="Minimap compass"&gt;
+        &lt;SkipStereo/&gt;
+    &lt;/ShaderPatch&gt;
+&lt;/Profile&gt;</pre>
+    </section>
+
+    <section class="block" id="fx-prims">
+      <h2>Fix primitives</h2>
+      <p class="sub">Each primitive goes inside a <code>&lt;ShaderPatch CRC="…"&gt;</code> block. No HLSL needed. Most are DX11 only for now; they are in the 0.4.3 and 0.5.0 builds.</p>
+      <div class="prims">
+        <article class="prim"><div class="prim-top"><h3>&lt;SkipStereo/&gt;</h3><span class="api-tag">DX9 · DX11</span></div><p>Draws the shader the same in both eyes. Fixes most HUD, crosshair and overlay problems.</p><pre>&lt;SkipStereo/&gt;</pre></article>
+        <article class="prim"><div class="prim-top"><h3>&lt;When TextureCRC&gt;</h3><span class="api-tag">DX9 · DX11</span></div><p>Applies a fix only when a given texture is bound, for shaders that draw several things. Find the texture with draw-level hunting.</p><pre>&lt;When TextureCRC="0x8F3A21BC"&gt;&lt;SkipStereo/&gt;&lt;/When&gt;</pre></article>
+        <article class="prim"><div class="prim-top"><h3>&lt;SpriteDepth/&gt;</h3><span class="api-tag">DX11</span></div><p>Puts a 2D sprite at the depth of the scene behind it, so it sits on the thing it marks.</p><pre>&lt;SpriteDepth TexSlot="3" DepthReg="o0" DepthComponent="z"/&gt;</pre></article>
+        <article class="prim"><div class="prim-top"><h3>&lt;FixedDepth&gt;</h3><span class="api-tag">DX11</span></div><p>Pins a shader's output to one depth, or to the screen plane.</p><pre>&lt;FixedDepth Value="0.5"/&gt;</pre></article>
+        <article class="prim"><div class="prim-top"><h3>&lt;DepthFromCB&gt;</h3><span class="api-tag">DX11</span></div><p>Reads the depth to use from a constant-buffer slot and offset.</p><pre>&lt;DepthFromCB Slot="1" OffsetBytes="48"/&gt;</pre></article>
+        <article class="prim"><div class="prim-top"><h3>&lt;AnimateDepth&gt;</h3><span class="api-tag">DX11</span></div><p>Moves depth from a start to an end value, driven by a progress value the game already tracks.</p><pre>&lt;AnimateDepth ProgressCB="2" OffsetBytes="16" Start="0.0" End="1.0"/&gt;</pre></article>
+        <article class="prim"><div class="prim-top"><h3>&lt;ShiftUV&gt;</h3><span class="api-tag">DX11</span></div><p>Offsets an output coordinate per eye. Use for screen-space effects drawn at the wrong depth.</p><pre>&lt;ShiftUV OutputReg="o1" Component="x" Amount="0.004"/&gt;</pre></article>
+        <article class="prim"><div class="prim-top"><h3>&lt;ParallaxLayer&gt;</h3><span class="api-tag">DX11</span></div><p>A preset shift for layered 2D games, so background layers sit behind foreground ones.</p><pre>&lt;ParallaxLayer/&gt;</pre></article>
+        <article class="prim"><div class="prim-top"><h3>&lt;PerEyeTexture&gt;</h3><span class="api-tag">DX11</span></div><p>Swaps in a different pre-rendered texture for the right eye.</p><pre>&lt;PerEyeTexture Slot="0" LeftCRC="0x…" RightCRC="0x…"/&gt;</pre></article>
+        <article class="prim"><div class="prim-top"><h3>&lt;OverrideCBValue&gt;</h3><span class="api-tag">DX11</span></div><p>Writes one value into the right eye's constant buffer.</p><pre>&lt;OverrideCBValue Slot="2" OffsetBytes="64" Value="0.25"/&gt;</pre></article>
+      </div>
+      <p class="muted" style="font-size:14px">Planned: <code>&lt;InjectMath&gt;</code> for small bytecode edits, <code>&lt;ReplaceShader&gt;</code> with an LGPL template library, a 2D-to-3D parallax primitive for emulated collections, and DX9 versions of the depth primitives.</p>
+    </section>
+
+    <section class="block" id="fx-dx9">
+      <h2>DX9, DX8 and DX7</h2>
+      <div class="prose">
+        <p><strong>DX9 and DX8</strong> use the iZ3D profile tags in <code>BaseProfile.xml</code>: <code>&lt;Mono&gt;</code> turns stereo off for a shader, <code>&lt;Multiplier&gt;</code> and <code>&lt;ConvergenceShift&gt;</code> change stereo strength per shader, and <code>&lt;Matrices&gt;</code> tells wiz3D which matrix is the projection. ShaderHunter gives you the CRC; you paste it into the right tag.</p>
+        <p><strong>DX7</strong> has no programmable shaders. Stereo comes from adjusting the fixed-function projection, so there is no shader fix layer.</p>
+      </div>
+      <pre>&lt;Profile Name="Example Game"&gt;
+    &lt;File Name="game.exe"/&gt;
+    &lt;Mono&gt;
+        &lt;VertexShader CRC="0xA3B5F218"/&gt;
+    &lt;/Mono&gt;
+&lt;/Profile&gt;</pre>
+    </section>
+
+    <section class="block" id="fx-dump">
+      <h2>Dumping and tracing</h2>
+      <p class="sub">Settings in <code>wiz3D_Config.xml</code> under <code>&lt;GlobalSettings&gt;</code>. They slow the game down, so turn them off again for play.</p>
+      <div class="table-box">
+        <table>
+          <thead><tr><th scope="col">Setting</th><th scope="col">What it gives you</th><th scope="col">APIs</th></tr></thead>
+          <tbody>
+            <tr><td><code>DumpVS="1"</code>, <code>DumpPS="1"</code></td><td>Every shader the game creates, written to <code>wiz3D_Shaders\&lt;Game&gt;\Dump\</code>. Useful for matching a known HelixMod fix by CRC.</td><td>DX9, DX10/11</td></tr>
+            <tr><td><code>CollectDebugInformation="1"</code></td><td>Constant-buffer layouts and camera-matrix candidates in <code>wiz3D_proxy.log</code>. The main aid for writing an engine profile.</td><td>DX10/11</td></tr>
+            <tr><td><code>VerboseFrameTrace="N"</code></td><td>A draw-by-draw timeline for N frames, starting at <code>FrameTraceStartFrame</code>.</td><td>DX10/11</td></tr>
+            <tr><td><code>WIZ3D_FORCE_DUMP=1</code></td><td>Environment variable that turns dumping on for every game, for people writing fixes.</td><td>DX9, DX10/11</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="block" id="fx-submit">
+      <h2>Submitting a fix</h2>
+      <div class="prose">
+        <p>Open an issue or pull request with the game name, your <code>&lt;Profile&gt;</code> block and a short note on what it fixes. Merged profiles ship to every player in the next release.</p>
+      </div>
+      <div class="callout">Fixes you submit are licensed LGPL-2.1, like the rest of wiz3D. Please don't port fixes from HelixMod, geo-11 or 3Dmigoto, which are GPL. Write your own, or ask the original author to offer theirs under LGPL-2.1 or MIT.</div>
+      <div class="btn-row"><a class="btn btn-primary" href="https://github.com/Stereopticon-Org/wiz3D/issues/new">Open an issue</a><a class="btn btn-ghost" href="https://github.com/Stereopticon-Org/wiz3D/blob/main/docs/SHADER_FIXES.md">Full technical notes</a></div>
+    </section>
+  </div>
+</div>
+
+<!-- ===================== OUTPUTS ===================== -->
+<div class="view" data-view="outputs" hidden>
+  <div class="wrap">
+    <div class="view-head">
+      <span class="eyebrow">Seeing it in 3D</span>
+      <h1>3D outputs</h1>
+      <p>The output modes wiz3D can send to your display, and how much real stereo a web browser can show you.</p>
+    </div>
+
+    <section class="block" id="viewer-demo">
+      <h2>Stereo viewer</h2>
+      <p class="sub">Wiggle mode flips between the two eyes so anyone can see the depth without special hardware. Switch modes to try anaglyph glasses, free-viewing or a 3D TV. Open your own wiz3D screenshot to check it.</p>
+      <div class="viewer3d" id="demo-viewer"></div>
+    </section>
+
+    <section class="block">
+      <h2>What a browser can show</h2>
+      <p class="sub">Browsers have no access to 3D Vision, Quad-Buffer Stereo or a display's eye tracking. Everything else either works anywhere or works with some care.</p>
+      <div class="table-box">
+        <table>
+          <thead><tr><th scope="col">Viewing method</th><th scope="col">In a browser</th><th scope="col">What you need</th></tr></thead>
+          <tbody>
+            <tr><td>Wiggle</td><td><span class="yes">Works anywhere</span></td><td>Nothing. The default on this site.</td></tr>
+            <tr><td>Red/cyan anaglyph</td><td><span class="yes">Works anywhere</span></td><td>Red/cyan glasses. Colours shift.</td></tr>
+            <tr><td>Cross-eyed or parallel free-view</td><td><span class="yes">Works anywhere</span></td><td>Practice. Keep the image small for parallel viewing.</td></tr>
+            <tr><td>Side-by-side or top-and-bottom</td><td><span class="yes">Works in fullscreen</span></td><td>A 3D TV or projector set to its SBS or TAB mode.</td></tr>
+            <tr><td>Row or column interleaved</td><td><span class="part">Works with care</span></td><td>Fullscreen at native resolution with 100% display scaling, so each row lands on one physical pixel row.</td></tr>
+            <tr><td>VR headset</td><td><span class="plan">Planned</span></td><td>A browser with WebXR, such as Meta Quest Browser. Each eye gets its own image.</td></tr>
+            <tr><td>Eye-tracked glasses-free displays</td><td><span class="no">No</span></td><td>Weaving needs the display's own runtime and eye tracker. Download the screenshot and open it in the display's viewer.</td></tr>
+            <tr><td>NVIDIA 3D Vision, Quad-Buffer Stereo</td><td><span class="no">No</span></td><td>No browser can drive these today. Download the screenshot.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2>wiz3D output modes</h2>
+      <p class="sub">Choose one in <code>wiz3D_Config.xml</code> by name or number, for example <code>&lt;OutputMode Value="HalfSBS"/&gt;</code>. Every wrapper offers the same list from 0.5.0.</p>
+      <div class="table-box">
+        <table>
+          <thead><tr><th scope="col">#</th><th scope="col">Name</th><th scope="col">What it does</th><th scope="col">For</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">1</td><td><code>HalfSBS</code></td><td>Half side-by-side</td><td>Any 3D TV or panel with SBS input</td></tr>
+            <tr><td class="mono">2</td><td><code>FullSBS</code></td><td>Full side-by-side</td><td>Displays expecting full width per eye</td></tr>
+            <tr><td class="mono">3</td><td><code>HalfTAB</code></td><td>Half top-and-bottom, aka Over-Under</td><td>TVs with top-and-bottom input</td></tr>
+            <tr><td class="mono">4</td><td><code>FullTAB</code></td><td>Full top-and-bottom, aka Over-Under</td><td>Full resolution per eye, stacked</td></tr>
+            <tr><td class="mono">5</td><td><code>Anaglyph</code></td><td>Red/cyan, Dubois method</td><td>Any monitor and red/cyan glasses</td></tr>
+            <tr><td class="mono">6</td><td><code>RowIL</code></td><td>Row interleaved</td><td>Passive 3D TVs such as LG Cinema 3D</td></tr>
+            <tr><td class="mono">7</td><td><code>ColumnIL</code></td><td>Column interleaved</td><td>Lenticular and column-interleaved displays</td></tr>
+            <tr><td class="mono">8</td><td><code>Checker</code></td><td>Checkerboard</td><td>DLP-Link projectors</td></tr>
+            <tr><td class="mono">9</td><td><code>SRWeave</code></td><td>Simulated Reality weave, the shipped default</td><td>Acer SpatialLabs, Samsung Odyssey 3D and other SR panels</td></tr>
+            <tr><td class="mono">10</td><td><code>Mirror</code></td><td>Stereo mirror</td><td>Dual-display mirror rigs</td></tr>
+            <tr><td class="mono">11</td><td><code>3DVisionGlasses</code></td><td>NVIDIA 3D Vision shutter glasses</td><td>3D Vision emitter, glasses and a 120 Hz panel, via <a href="https://github.com/oneup03/NV3D-Lib">NV3D-Lib</a> or <a href="https://github.com/oscardelatorre/VisionRestoration">3D Vision Restoration</a>. Falls back to Half SBS.</td></tr>
+            <tr><td class="mono">12</td><td><code>Katanga</code></td><td>Stereo output via a shared DX11 texture</td><td>Viewing in <a href="https://github.com/bo3b/Katanga">Katanga</a>, for example in a VR headset</td></tr>
+            <tr><td class="mono">0</td><td><code>iZ3D</code></td><td>Legacy iZ3D dual-panel</td><td>Original iZ3D monitors; others fall back to Half SBS</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="muted" style="font-size:14px">Screenshots: press <kbd>Ctrl</kbd>+<kbd>F12</kbd> in game. Files go to <code>My Pictures\wiz3D Screenshots\&lt;Game&gt;\</code>. Choose PNG, PNS, JPEG, JPS, BMP or DDS with <code>&lt;ScreenshotType&gt;</code>.</p>
+    </section>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="about">
+      <a class="brand" href="#top" aria-label="Stereopticon home"><svg viewBox="0 0 1385 236" role="img" aria-label="Stereopticon"><use href="#lockup"></use></svg></a>
+      <p>Open-source stereoscopic 3D, for every display. wiz3D builds on the open iZ3D driver codebase released by Bo3b.</p>
+      <p class="lic">wiz3D and Stereopticon: LGPL-2.1. Stereo Loom: MIT. Product names belong to their owners.</p>
+    </div>
+    <div>
+      <h4>Projects</h4>
+      <ul>
+        <li><a href="#wiz3d">wiz3D</a></li>
+        <li><a href="#stereo-loom">Stereo Loom</a></li>
+        <li><a href="#launcher">Stereopticon app</a></li>
+        <li><a href="#compatibility">Game compatibility</a></li>
+        <li><a href="#apis">API support</a></li>
+        <li><a href="#fixes">Fix guide</a></li>
+        <li><a href="#outputs">3D outputs</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Community</h4>
+      <ul>
+        <li><a class="gh-link" href="https://github.com/Stereopticon-Org">GitHub</a></li>
+        <li><a class="oc-link" href="https://opencollective.com/stereopticon">Open Collective</a></li>
+        <li><a href="https://github.com/sponsors/effcol">GitHub Sponsors</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+'use strict';
+var ORG='https://github.com/Stereopticon-Org';
+var REPO=ORG+'/wiz3D';
+var SITE_REPO=ORG+'/stereopticon.org';
+var DATA={games:[],excluded:[]},GAMES=[],GH=null;
+
+var ST={
+  working:{label:'Working',rank:0},
+  mostly:{label:'Mostly working',rank:1},
+  partial:{label:'Partial',rank:2},
+  broken:{label:'Not working',rank:3},
+  untested:{label:'Untested',rank:4}
+};
+var ST_KEYS=['working','mostly','partial','broken','untested'];
+var SRC={
+  'injector':'Stereo injector',
+  'hd3d':'Native AMD HD3D',
+  '3dv-direct':'Native 3D Vision',
+  '3dv-auto':'3D Vision Automatic-aware',
+  'ogl-qb':'OpenGL Quad-Buffer Stereo'
+};
+var EXCL_SRC={'injector':'stereo injector','hd3d':'HD3D','3dv-direct':'3D Vision Direct','3dv-auto':'3D Vision Automatic','ogl-qb':'OpenGL Quad-Buffer Stereo'};
+var CHECKS=['Scene depth','HUD and menus','Shadows','Lighting and reflections','Post-processing','Cutscenes'];
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function md(s){
+  var h=esc(s);
+  h=h.replace(/&lt;br\s*\/?&gt;/gi,'<br>');
+  h=h.replace(/&lt;sub&gt;|&lt;\/sub&gt;/gi,'');
+  h=h.replace(/`([^`]+)`/g,'<code>$1</code>');
+  h=h.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g,'<a href="$2">$1</a>');
+  return h;
+}
+function plain(s){return String(s||'').replace(/<br\s*\/?>/gi,' ').replace(/\[([^\]]+)\]\([^)]+\)/g,'$1').replace(/`/g,'');}
+function count(list){var c={working:0,mostly:0,partial:0,broken:0,untested:0};list.forEach(function(g){c[g.status]++;});return c;}
+function bar(c,label){
+  var total=ST_KEYS.reduce(function(a,k){return a+c[k];},0);
+  if(!total) return '<div class="bar empty" role="img" aria-label="'+esc(label||'')+': no games yet"></div>';
+  var parts=ST_KEYS.filter(function(k){return c[k];}).map(function(k){return '<span class="s-'+k+'" style="width:'+(c[k]/total*100).toFixed(2)+'%" title="'+ST[k].label+': '+c[k]+'"></span>';}).join('');
+  var desc=ST_KEYS.map(function(k){return ST[k].label+' '+c[k];}).join(', ');
+  return '<div class="bar" role="img" aria-label="'+esc((label?label+': ':'')+desc)+'">'+parts+'</div>';
+}
+function legend(c){return ST_KEYS.map(function(k){return '<span class="s-'+k+'">'+ST[k].label+' <b>'+c[k]+'</b></span>';}).join('');}
+function pill(st,text,lg){return '<span class="pill s-'+st+(lg?' lg':'')+'">'+esc(text||ST[st].label)+'</span>';}
+function goodShare(c){var tested=c.working+c.mostly+c.partial+c.broken;return {tested:tested,good:c.working+c.mostly};}
+
+/* ---------- compatibility summary ---------- */
+function renderSummary(){
+  var c=count(GAMES), s=goodShare(c);
+  var groups=[['Stereo injector',GAMES.filter(function(g){return g.source==='injector';})],
+              ['Native AMD HD3D',GAMES.filter(function(g){return g.source==='hd3d';})],
+              ['Native and Automatic 3D Vision',GAMES.filter(function(g){return g.source==='3dv-direct'||g.source==='3dv-auto';})],
+              ['OpenGL Quad-Buffer Stereo',GAMES.filter(function(g){return g.source==='ogl-qb';})]];
+  var rows=groups.map(function(gr){var cc=count(gr[1]),ss=goodShare(cc);
+    return '<div class="api-bar"><div style="display:flex;justify-content:space-between;gap:12px;font-size:14px"><span>'+gr[0]+'</span><span class="muted" style="font-variant-numeric:tabular-nums">'+ss.good+' of '+ss.tested+' tested work</span></div>'+bar(cc,gr[0])+'</div>';}).join('');
+  document.getElementById('compat-summary').innerHTML=
+    '<div class="big-stat"><span class="n">'+GAMES.length+'</span><span class="l">games listed</span>'+
+    '<span class="l" style="margin-top:10px"><b style="color:var(--fg)">'+s.good+'</b> of '+s.tested+' tested games work fully or mostly</span>'+
+    '<div style="margin-top:14px">'+bar(c,'All games')+'</div><div class="legend" style="margin-top:12px">'+legend(c)+'</div></div>'+
+    '<div class="summary-bars">'+rows+'</div>';
+  var hb=document.getElementById('home-compat');
+  if(hb){hb.innerHTML='<div class="api-bar"><div style="display:flex;justify-content:space-between;gap:12px;font-size:14px"><span><b>'+s.good+'</b> of '+s.tested+' tested games work</span><span class="muted">'+GAMES.length+' listed</span></div>'+bar(c,'All games')+'</div><div class="legend">'+legend(c)+'</div>';}
+}
+
+/* ---------- API support ---------- */
+var APIS=[
+ {group:'Stereo injector: adds 3D to games made without it'},
+ {name:'DirectX 7',sub:'ddraw.dll',state:'progress',label:'In progress',how:'Converted to the DX9 stereo path. The conversion works; stereo is being brought up title by title.',pick:function(g){return g.api==='DX7';}},
+ {name:'DirectX 8',sub:'d3d8.dll',state:'partial',label:'Partially working',how:'Converted to the DX9 stereo path. Known good on a handful of titles.',pick:function(g){return g.api==='DX8';}},
+ {name:'DirectX 9',sub:'d3d9.dll',state:'good',label:'Mostly working',how:'The full iZ3D profile set, shader fixes, ShaderHunter, laser sight and on-screen display.',pick:function(g){return g.api==='DX9'&&g.source==='injector';}},
+ {name:'DirectX 10',sub:'d3d10.dll',state:'progress',label:'In progress',how:'Builds on the DX11 pipeline, but no per-game profiles work yet. DX10 titles are listed with DX11 below. Testing them is a big open task.',pick:null,cap:'Tested together with DX11'},
+ {name:'DirectX 11',sub:'d3d11.dll · dxgi.dll',state:'good',label:'Mostly working',how:'Full COM-wrap pipeline with constant-buffer analysis, 37 engine features and per-game profiles.',pick:function(g){return g.api==='DX10/11'&&g.source==='injector';}},
+ {name:'DirectX 12',sub:'dxgi.dll',state:'planned',label:'Planned',how:'In design. A ReShade add-on backend shared with Vulkan, aimed at Unity, Godot and custom engines that UEVR and REFramework don’t cover.',pick:null},
+ {name:'Vulkan',sub:'vulkan-1.dll',state:'planned',label:'Planned',how:'Shares the DX12 backend, with its own loader and Vulkan layer manifest.',pick:null},
+ {name:'OpenGL',sub:'opengl32.dll',state:'planned',label:'Planned',how:'Adding stereo to ordinary OpenGL games. Planned as a separate piece of work; today wiz3D only captures OpenGL games that already use Quad-Buffer Stereo.',pick:null},
+ {name:'DirectX 1 to 6',sub:'ddraw.dll',state:'considering',label:'Considering',how:'Not started. One route to explore: dgVoodoo 2 already translates these APIs to Direct3D 11, where the DX11 injector could take over.',pick:null},
+ {name:'3dfx Glide',sub:'glide*.dll',state:'considering',label:'Considering',how:'Not started. The same route could work through a Glide wrapper such as dgVoodoo 2 or nGlide.',pick:null},
+ {group:'Native stereo capture: brings back 3D the game already had'},
+ {name:'AMD HD3D',sub:'DX9 · DX11',state:'good',label:'Mostly working',how:'Turns the game’s own HD3D rendering on and converts it. Half SBS and TAB work on about half the games so far.',pick:function(g){return g.source==='hd3d';}},
+ {name:'3D Vision Direct Mode',sub:'DX9 · DX10 · DX11',state:'good',label:'Mostly working',how:'Vendor proxies for games that render both eyes and hand them to 3D Vision.',pick:function(g){return g.source==='3dv-direct';}},
+ {name:'3D Vision Automatic-aware',sub:'DX9 · DX11',state:'partial',label:'Partially working',how:'Replaces NVIDIA’s driver injection. In-game depth sliders drive wiz3D through the NVAPI bridge.',pick:function(g){return g.source==='3dv-auto';}},
+ {name:'OpenGL Quad-Buffer Stereo',sub:'opengl32.dll',state:'partial',label:'Partially working',how:'Captures native left and right buffers from id Tech 3 and 4 games, flight sims and CAD.',pick:function(g){return g.source==='ogl-qb';}}
+];
+function renderApis(){
+  document.getElementById('api-legend').innerHTML=legend(count(GAMES));
+  var html='<div class="api-row head"><span>API</span><span>Status</span><span>How it works</span><span>Reported results</span></div>';
+  APIS.forEach(function(a){
+    if(a.group){html+='<div class="api-group">'+esc(a.group)+'</div>';return;}
+    var list=a.pick?GAMES.filter(a.pick):[], c=count(list), s=goodShare(c);
+    var cap=a.pick?(s.good+' of '+s.tested+' tested work · '+c.untested+' untested'):(a.cap||(a.state==='considering'?'Not started':'No builds yet'));
+    html+='<div class="api-row"><div class="api-name">'+esc(a.name)+'<small>'+esc(a.sub)+'</small></div>'+
+      '<span class="state '+a.state+'">'+esc(a.label)+'</span>'+
+      '<p class="api-how">'+esc(a.how)+'</p>'+
+      '<div class="api-bar">'+bar(c,a.name)+'<span class="cap">'+esc(cap)+'</span></div></div>';
+  });
+  document.getElementById('api-list').innerHTML=html;
+  var rm=document.getElementById('roadmap');
+  if(rm){
+    var ms=(GH&&GH.milestones||[]).filter(function(m){return m.open+m.closed>0;});
+    if(!ms.length){rm.innerHTML='<p class="muted">Release progress appears here once milestones are set up in the wiz3D repository.</p>';}
+    else{
+      ms.sort(function(a,b){return (a.state===b.state?0:(a.state==='open'?-1:1))||String(a.due_on||'9').localeCompare(String(b.due_on||'9'));});
+      rm.innerHTML='<div class="api-list">'+ms.map(function(m){var t=m.open+m.closed,pc=Math.round(m.closed/t*100);
+        return '<div class="api-row ms-row"><div class="api-name"><a href="'+esc(m.url)+'" style="color:inherit">'+esc(m.title)+'</a><small>'+esc(m.repo)+(m.due_on?' \u00b7 due '+esc(m.due_on.slice(0,10)):'')+'</small></div>'+
+          '<span class="state '+(m.state==='closed'?'good':'progress')+'">'+(m.state==='closed'?'Released':'In progress')+'</span>'+
+          '<p class="api-how">'+esc(m.description)+'</p>'+
+          '<div class="api-bar"><div class="bar" role="img" aria-label="'+pc+'% of issues closed"><span style="width:'+pc+'%;--c:var(--accent)"></span></div><span class="cap">'+m.closed+' of '+t+' issues closed \u00b7 '+pc+'%</span></div></div>';}).join('')+'</div>';
+    }
+  }
+}
+
+/* ---------- list + filters ---------- */
+var F={q:'',api:'all',src:'all',sort:'name',st:{working:true,mostly:true,partial:true,broken:true,untested:true}};
+function setupFilters(){
+  var apis=['DX7','DX8','DX9','DX10/11','OpenGL','HD3D'];
+  document.getElementById('f-api').innerHTML='<option value="all">All</option>'+apis.map(function(a){return '<option>'+a+'</option>';}).join('');
+  document.getElementById('f-src').innerHTML='<option value="all">All</option>'+Object.keys(SRC).map(function(k){return '<option value="'+k+'">'+SRC[k]+'</option>';}).join('');
+  var c=count(GAMES);
+  document.getElementById('f-status').innerHTML=ST_KEYS.map(function(k){return '<button type="button" class="chip-btn s-'+k+'" data-st="'+k+'" aria-pressed="true">'+ST[k].label+' <span class="ct">'+c[k]+'</span></button>';}).join('');
+  document.getElementById('f-status').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var k=b.dataset.st;F.st[k]=!F.st[k];b.setAttribute('aria-pressed',String(F.st[k]));renderList();});
+  document.getElementById('q').addEventListener('input',function(e){F.q=e.target.value.trim().toLowerCase();renderList();});
+  document.getElementById('f-api').addEventListener('change',function(e){F.api=e.target.value;renderList();});
+  document.getElementById('f-src').addEventListener('change',function(e){F.src=e.target.value;renderList();});
+  document.getElementById('f-sort').addEventListener('change',function(e){F.sort=e.target.value;renderList();});
+}
+function renderList(){
+  var list=GAMES.filter(function(g){
+    if(!F.st[g.status])return false;
+    if(F.api!=='all'&&g.api!==F.api)return false;
+    if(F.src!=='all'&&g.source!==F.src)return false;
+    if(F.q&&g.name.toLowerCase().indexOf(F.q)<0)return false;
+    return true;
+  });
+  list.sort(function(a,b){
+    if(F.sort==='status'){var d=ST[a.status].rank-ST[b.status].rank;if(d)return d;}
+    return a.name.localeCompare(b.name);
+  });
+  document.getElementById('result-count').textContent=list.length+(list.length===1?' game':' games');
+  document.getElementById('game-rows').innerHTML=list.length?list.map(function(g){
+    var n=plain(g.notes); if(n.length>110)n=n.slice(0,107)+'…';
+    return '<tr><td class="name"><a href="#game-'+g.slug+'">'+esc(g.name)+'</a></td><td class="api">'+esc(g.api)+'</td><td class="src">'+esc(SRC[g.source])+'</td><td>'+pill(g.status)+'</td><td class="notes">'+esc(n)+'</td></tr>';
+  }).join(''):'<tr><td colspan="5" class="muted">No games match. Clear the search or turn statuses back on.</td></tr>';
+}
+function renderExcluded(){
+  var by={};
+  DATA.excluded.forEach(function(x){var k=x.reason;(by[k]=by[k]||{});(by[k][x.name]=by[k][x.name]||[]).push(EXCL_SRC[x.source]);});
+  document.getElementById('excluded').innerHTML=Object.keys(by).map(function(r){
+    var names=Object.keys(by[r]).sort();
+    return '<div><h3>'+esc(r)+' <span class="muted" style="font-weight:400">· '+names.length+'</span></h3><p>'+names.map(esc).join(', ')+'</p></div>';
+  }).join('');
+}
+
+/* ---------- game page ---------- */
+function issueUrl(g){
+  var q='template=compat-report.yml&title='+encodeURIComponent('[Compat] '+(g?g.name:''));
+  if(g){q+='&game='+encodeURIComponent(g.name);if(g.install&&g.install[0])q+='&folder='+encodeURIComponent(g.install[0]);}
+  return SITE_REPO+'/issues/new?'+q;
+}
+var RES={'Working':'working','Mostly working':'mostly','Partial':'partial','Not working':'broken'};
+function renderGame(slug){
+  var g=GAMES.find(function(x){return x.slug===slug;});
+  var root=document.getElementById('game-page');
+  if(!g){root.innerHTML='<div class="view-head"><div class="crumbs"><a href="#compatibility">Game compatibility</a></div><h1>Game not found</h1><p>No game matches this link. It may have been renamed. Search the <a href="#compatibility" style="color:var(--accent)">compatibility list</a>.</p></div>';document.title='Not found · Stereopticon';return;}
+  document.title=g.name+' · wiz3D compatibility';
+  var folders=g.install.map(function(p){return '<code>'+esc(p)+'</code>';}).join(' or ');
+  var steps=['Start the game once and set fullscreen at your display’s resolution and refresh rate.',
+    'Download the latest wiz3D release.',
+    'Copy the <b>contents</b> of '+(folders||'the matching folder')+' into the folder that holds the game’s <code>.exe</code>.',
+    'Choose your output mode in <code>wiz3D_Config.xml</code>. See <a href="#outputs" style="color:var(--accent)">3D outputs</a>.'];
+  if(g.source==='hd3d') steps.push('Start the game and turn on Stereoscopic 3D or HD3D in its settings if it doesn’t switch on by itself.');
+  else if(g.source==='ogl-qb') steps.push('Turn on the game’s own stereo rendering first. The notes say how.');
+  else steps.push('Start the game. Toggle stereo with <kbd>Numpad *</kbd>.');
+  var checks=g.checks||null, assessed=checks&&Object.keys(checks).length;
+  var passed=assessed?CHECKS.filter(function(k){return checks[k]==='good';}).length:0;
+  var shots=g.shots&&g.shots.length;var reps=(g.reports||[]).slice().reverse();
+  root.innerHTML=
+    '<div class="game-head"><div class="crumbs"><a href="#compatibility">Game compatibility</a><span aria-hidden="true">/</span><span>'+esc(g.api)+'</span></div>'+
+    '<h1>'+esc(g.name)+'</h1><div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">'+pill(g.status,g.status_text||ST[g.status].label,true)+'<span class="chip">'+esc(g.api)+'</span><span class="chip">'+esc(SRC[g.source])+'</span></div></div>'+
+    '<div class="game-grid"><div class="game-main">'+
+      '<section class="card"><h2>Notes and known issues</h2>'+(g.notes?'<p class="notes">'+md(g.notes)+'</p>':'<p class="muted">No issues reported.</p>')+
+        '<div class="btn-row"><a class="btn btn-ghost" href="https://github.com/search?type=issues&q='+encodeURIComponent('org:Stereopticon-Org "'+g.name+'"')+'">Search GitHub issues</a></div></section>'+
+      (reps.length?'<section class="card"><h2>Test reports</h2><ul class="check-list">'+reps.map(function(r){return '<li style="flex-direction:column;align-items:flex-start;gap:6px"><div style="display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center">'+(RES[r.result]?pill(RES[r.result],r.result):'')+'<a href="'+SITE_REPO+'/issues/'+r.issue+'" style="color:var(--accent)">#'+r.issue+'</a><span class="v">'+esc([r.date,r.by&&'@'+r.by,r.version&&'wiz3D '+r.version,r.output].filter(Boolean).join(' \u00b7 '))+'</span></div>'+(r.display?'<span class="v">'+esc(r.display)+'</span>':'')+(r.notes?'<span style="font-size:14px">'+md(r.notes)+'</span>':'')+'</li>';}).join('')+'</ul></section>':'')+
+      '<section class="card"><h2>Stereo screenshots</h2>'+(shots?'<div class="viewer3d" id="game-viewer"></div>':
+        '<div class="shot-empty"><h3>No stereo screenshot yet</h3><p>In game, press <kbd>Ctrl</kbd>+<kbd>F12</kbd>. wiz3D saves a stereo pair to <code>My Pictures\\wiz3D Screenshots\\</code>. Attach it to a test report and it will show here in wiggle 3D.</p><a class="more" href="#outputs">Try the viewer with a demo scene</a></div>')+'</section>'+
+      '<section class="card"><h2>How to install</h2><ol class="steps">'+steps.map(function(s){return '<li>'+s+'</li>';}).join('')+'</ol></section>'+
+    '</div><aside class="game-side">'+
+      '<section class="card"><h2>Details</h2><dl class="kv">'+
+        '<dt>Status</dt><dd>'+esc(g.status_text||ST[g.status].label)+'</dd>'+
+        '<dt>API</dt><dd>'+esc(g.api)+'</dd>'+
+        '<dt>Stereo</dt><dd>'+esc(SRC[g.source])+'</dd>'+
+        '<dt>Folder</dt><dd>'+(folders||'—')+'</dd>'+
+        (g.iz3d_profile===null?'':'<dt>iZ3D profile</dt><dd>'+(g.iz3d_profile?'Yes, from the original driver':'No')+'</dd>')+
+        (g.link?'<dt>Project</dt><dd><a href="'+esc(g.link)+'" style="color:var(--accent)">Website</a></dd>':'')+'<dt>Reports</dt><dd>'+(reps.length?reps.length+(reps.length===1?' report':' reports'):'From the wiz3D test tables')+'</dd><dt>Data</dt><dd><a href="'+SITE_REPO+'/blob/main/games/'+g.slug+'.yml" style="color:var(--accent)">Edit on GitHub</a></dd></dl></section>'+
+      '<section class="card"><h2>Stereo completeness</h2>'+bar(assessed?{working:passed,mostly:0,partial:CHECKS.length-passed,broken:0,untested:0}:{working:0,mostly:0,partial:0,broken:0,untested:0},'Completeness')+
+        '<p class="muted" style="font-size:14px">'+(assessed?passed+' of '+CHECKS.length+' parts look right.':'Not assessed yet. Testers can mark each part when they report.')+'</p>'+
+        '<ul class="check-list">'+CHECKS.map(function(k){var v=assessed?checks[k]:null;return '<li><span>'+k+'</span><span class="v">'+(v==='good'?'Correct':v==='bad'?'Wrong':v==='partial'?'Some issues':'Not checked')+'</span></li>';}).join('')+'</ul></section>'+
+      '<section class="card"><h2>Tested it?</h2><p class="muted" style="font-size:15px">Send your result so this page stays accurate.</p><a class="btn btn-primary" href="'+issueUrl(g)+'">Report a result</a></section>'+
+    '</aside></div>';
+  if(shots){var sh=g.shots[g.shots.length-1];makeViewer(document.getElementById('game-viewer'),{src:'shots/'+g.slug+'/'+sh.file,layout:sh.layout||'lr',name:sh.issue?'Screenshot from #'+sh.issue:'Stereo screenshot'});}
+}
+
+/* ---------- stereo viewer ---------- */
+var MODES=[['wiggle','Wiggle'],['anaglyph','Anaglyph'],['cross','Cross-eyed'],['parallel','Parallel'],['lrl','Parallel + Cross'],['sbs','Half SBS'],['tab','Half TAB'],['rows','Rows'],['left','Left eye']];
+var HINTS={
+  wiggle:'The two eyes alternate. Near objects stay put while far ones shift, which your brain reads as depth.',
+  anaglyph:'Red/cyan glasses, red lens on the left. Uses the Dubois colour method, the same as wiz3D’s Anaglyph mode.',
+  cross:'Right eye image on the left. Cross your eyes until the two pictures merge into a third in the middle.',
+  parallel:'Left eye image on the left. Relax your eyes as if looking through the screen. Easier with a small window.',
+  lrl:'Left, right, left. Use the left pair for parallel viewing or the right pair for cross-eyed viewing. The format of the wiz3D README screenshots.',
+  sbs:'For 3D TVs and projectors. Go fullscreen, then set the TV to side-by-side 3D.',
+  tab:'For 3D TVs and projectors. Go fullscreen, then set the TV to top-and-bottom 3D.',
+  rows:'For passive 3D TVs. Needs fullscreen at native resolution and 100% scaling so each row lands on one screen row.',
+  left:'One eye only, for checking an image.'
+};
+var DUB_L=[0.456,0.500,0.176,-0.040,-0.038,-0.016,-0.015,-0.021,-0.005];
+var DUB_R=[-0.043,-0.088,-0.002,0.378,0.734,-0.018,-0.072,-0.113,1.226];
+var reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function demoEye(eye,W,H){
+  var c=document.createElement('canvas');c.width=W;c.height=H;var x=c.getContext('2d');
+  var f=W*0.62,b=0.32,C=7,cx=W/2,cy=H*0.46;
+  function P(X,Y,Z){return [cx+f*(X-eye*b/2)/Z+eye*f*b/(2*C), cy-f*Y/Z];}
+  var sky=x.createLinearGradient(0,0,0,H);sky.addColorStop(0,'#1d1a17');sky.addColorStop(.55,'#3a2b20');sky.addColorStop(1,'#171513');
+  x.fillStyle=sky;x.fillRect(0,0,W,H);
+  // hill layers, far to near (the Stereopticon card in miniature)
+  [[90,'#8a5e33',3.2,-0.4],[45,'#a8733f',2.2,-0.9],[24,'#c98a4b',1.2,-1.2]].forEach(function(L){
+    var Z=L[0];x.fillStyle=L[1];x.beginPath();var p0=P(-80,-1.6,Z);x.moveTo(p0[0],H);
+    for(var X=-80;X<=80;X+=1){var Y=L[3]+L[2]*(0.5+0.5*Math.sin(X*0.11+Z))*(0.6+0.4*Math.cos(X*0.047+Z*0.3));var p=P(X,Y,Z);x.lineTo(p[0],p[1]);}
+    x.lineTo(P(80,0,Z)[0],H);x.closePath();x.fill();
+  });
+  // floor grid
+  x.strokeStyle='rgba(237,230,218,.20)';x.lineWidth=1;
+  for(var gx=-12;gx<=12;gx+=1.5){var a=P(gx,-1.6,2.2),z=P(gx,-1.6,30);x.beginPath();x.moveTo(a[0],a[1]);x.lineTo(z[0],z[1]);x.stroke();}
+  for(var gz=2.5;gz<=30;gz*=1.22){var l=P(-12,-1.6,gz),r=P(12,-1.6,gz);x.beginPath();x.moveTo(l[0],l[1]);x.lineTo(r[0],r[1]);x.stroke();}
+  // spheres and posts, sorted far to near
+  var objs=[[-3.2,-0.6,16,1.0],[2.6,-0.9,11,0.7],[-1.2,-1.1,7,0.5],[1.4,-1.25,4.6,0.35],[-0.6,-1.33,3.4,0.27],[4.6,-0.2,22,1.4],[-5.2,-0.9,9,0.7]];
+  objs.sort(function(p,q){return q[2]-p[2];});
+  objs.forEach(function(o){
+    var p=P(o[0],o[1],o[2]),r=f*o[3]/o[2],sh=P(o[0],-1.6,o[2]);
+    x.fillStyle='rgba(0,0,0,.35)';x.beginPath();x.ellipse(sh[0],sh[1],r*1.05,r*0.22,0,0,Math.PI*2);x.fill();
+    var gr=x.createRadialGradient(p[0]-r*.35,p[1]-r*.4,r*.1,p[0],p[1],r);gr.addColorStop(0,'#f6e3c8');gr.addColorStop(.35,'#d79a5a');gr.addColorStop(1,'#5a3a1f');
+    x.fillStyle=gr;x.beginPath();x.arc(p[0],p[1],r,0,Math.PI*2);x.fill();
+  });
+  // HUD at screen depth (zero parallax)
+  x.font='600 '+Math.round(W/42)+'px Geist, system-ui, sans-serif';x.fillStyle='rgba(237,230,218,.9)';x.textAlign='center';
+  x.fillText('Screen depth',cx,H*0.92);
+  return c;
+}
+
+function makeViewer(root,opts){
+  root.innerHTML='<div class="v-stage"><canvas></canvas><span class="v-tag"></span></div>'+
+    '<div class="v-bar"><div class="seg" role="group" aria-label="Viewing mode">'+MODES.map(function(m){return '<button type="button" data-m="'+m[0]+'" aria-pressed="false">'+m[1]+'</button>';}).join('')+'</div>'+
+    '<div class="v-tools"><button type="button" class="btn btn-ghost" data-act="play">Pause</button><button type="button" class="btn btn-ghost" data-act="swap">Swap eyes</button><button type="button" class="btn btn-ghost" data-act="fs">Fullscreen</button>'+
+    (opts.demo?'<label class="btn btn-ghost file-btn">Open a screenshot<input type="file" accept="image/*,.jps,.pns" aria-label="Open a stereo screenshot"></label><label class="field" style="flex-direction:row;align-items:center;gap:8px" hidden data-layout-wrap><span>Layout</span><select data-layout><option value="lr">Left | Right</option><option value="rl">Right | Left (cross-eyed)</option><option value="tb">Top / bottom</option><option value="lrl">Parallel + Cross (L | R | L)</option></select></label>':'')+
+    '</div></div><p class="v-hint" aria-live="polite"></p>';
+  var stage=root.querySelector('.v-stage'),cv=root.querySelector('canvas'),ctx=cv.getContext('2d'),tag=root.querySelector('.v-tag'),hint=root.querySelector('.v-hint');
+  var playBtn=root.querySelector('[data-act="play"]');
+  var S={mode:'wiggle',L:null,R:null,swap:false,playing:!reduceMotion,flip:false,timer:null,name:'Demo scene, rendered in your browser',img:null,file:'',cache:{}};
+  function eyes(){return S.swap?[S.R,S.L]:[S.L,S.R];}
+  function size(w,h){if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h;}}
+  function draw(){
+    var e=eyes(),L=e[0],R=e[1];if(!L)return;var W=L.width,H=L.height;
+    clearInterval(S.timer);S.timer=null;
+    if(S.mode==='wiggle'){
+      size(W,H);ctx.drawImage(S.flip?R:L,0,0);
+      if(S.playing){S.timer=setInterval(function(){if(!root.isConnected){clearInterval(S.timer);return;}if(!stage.offsetParent&&!document.fullscreenElement)return;S.flip=!S.flip;ctx.drawImage(S.flip?R:L,0,0);},150);}
+    } else if(S.mode==='anaglyph'){
+      size(W,H);var key='ana'+S.swap;
+      if(!S.cache[key]){var t=document.createElement('canvas');t.width=W;t.height=H;var tc=t.getContext('2d');
+        tc.drawImage(L,0,0);var a=tc.getImageData(0,0,W,H);tc.drawImage(R,0,0);var bb=tc.getImageData(0,0,W,H);var d=a.data,q=bb.data;
+        for(var i=0;i<d.length;i+=4){var lr=d[i],lg=d[i+1],lb=d[i+2],rr=q[i],rg=q[i+1],rb=q[i+2];
+          d[i]=DUB_L[0]*lr+DUB_L[1]*lg+DUB_L[2]*lb+DUB_R[0]*rr+DUB_R[1]*rg+DUB_R[2]*rb;
+          d[i+1]=DUB_L[3]*lr+DUB_L[4]*lg+DUB_L[5]*lb+DUB_R[3]*rr+DUB_R[4]*rg+DUB_R[5]*rb;
+          d[i+2]=DUB_L[6]*lr+DUB_L[7]*lg+DUB_L[8]*lb+DUB_R[6]*rr+DUB_R[7]*rg+DUB_R[8]*rb;}
+        tc.putImageData(a,0,0);S.cache[key]=t;}
+      ctx.drawImage(S.cache[key],0,0);
+    } else if(S.mode==='cross'){size(W*2,H);ctx.drawImage(R,0,0);ctx.drawImage(L,W,0);}
+    else if(S.mode==='parallel'){size(W*2,H);ctx.drawImage(L,0,0);ctx.drawImage(R,W,0);}
+    else if(S.mode==='lrl'){size(W*3,H);ctx.drawImage(L,0,0);ctx.drawImage(R,W,0);ctx.drawImage(L,W*2,0);}
+    else if(S.mode==='sbs'){size(W,H);ctx.drawImage(L,0,0,W/2,H);ctx.drawImage(R,W/2,0,W/2,H);}
+    else if(S.mode==='tab'){size(W,H);ctx.drawImage(L,0,0,W,H/2);ctx.drawImage(R,0,H/2,W,H/2);}
+    else if(S.mode==='rows'){size(W,H);ctx.drawImage(L,0,0);for(var y=1;y<H;y+=2)ctx.drawImage(R,0,y,W,1,0,y,W,1);}
+    else {size(W,H);ctx.drawImage(L,0,0);}
+    root.querySelectorAll('[data-m]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.m===S.mode));});
+    var label=MODES.filter(function(m){return m[0]===S.mode;})[0][1];
+    tag.textContent=label+' · '+S.name;
+    hint.textContent=HINTS[S.mode]+(S.mode==='wiggle'&&!S.playing?' Paused: press Play to start.':'');
+    playBtn.hidden=S.mode!=='wiggle';playBtn.textContent=S.playing?'Pause':'Play';
+    cv.setAttribute('role','img');cv.setAttribute('aria-label',S.name+', shown as '+label);
+  }
+  function setPair(L,R,name){S.L=L;S.R=R;S.name=name;S.cache={};S.flip=false;draw();}
+  function split(img,layout){
+    var w=img.width,h=img.height,ew,eh,boxes;
+    if(layout==='tb'){ew=w;eh=h/2;boxes=[[0,0],[0,eh]];}
+    else if(layout==='lrl'){ew=w/3;eh=h;boxes=[[0,0],[ew,0]];}
+    else {ew=w/2;eh=h;boxes=layout==='rl'?[[ew,0],[0,0]]:[[0,0],[ew,0]];}
+    var tw=ew,th=eh;
+    if((layout==='lr'||layout==='rl')&&ew/eh<1.2)tw=ew*2;
+    if(layout==='tb'&&ew/eh>2.5)th=eh*2;
+    var scale=Math.min(1,1920/tw);tw=Math.round(tw*scale);th=Math.round(th*scale);
+    return boxes.map(function(bx){var c=document.createElement('canvas');c.width=tw;c.height=th;c.getContext('2d').drawImage(img,bx[0],bx[1],ew,eh,0,0,tw,th);return c;});
+  }
+  function loadImage(src,name,layout){
+    var im=new Image();im.decoding='async';
+    im.onload=function(){S.img=im;var p=split(im,layout);setPair(p[0],p[1],name);};
+    im.onerror=function(){hint.textContent='That file could not be opened as an image. Try a PNG, JPEG, JPS or PNS stereo pair.';};
+    im.src=src;
+  }
+  root.querySelector('.seg').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;S.mode=b.dataset.m;draw();});
+  playBtn.addEventListener('click',function(){S.playing=!S.playing;draw();});
+  root.querySelector('[data-act="swap"]').addEventListener('click',function(){S.swap=!S.swap;S.cache={};draw();});
+  root.querySelector('[data-act="fs"]').addEventListener('click',function(){
+    try{var r=stage.requestFullscreen&&stage.requestFullscreen();if(r&&r.catch)r.catch(function(){hint.textContent='Fullscreen isn’t available here. Open the page in its own browser tab to use it.';});}catch(err){hint.textContent='Fullscreen isn’t available here.';}
+  });
+  var fileIn=root.querySelector('input[type="file"]'),laySel=root.querySelector('[data-layout]'),layWrap=root.querySelector('[data-layout-wrap]');
+  if(fileIn){fileIn.addEventListener('change',function(){
+    var file=fileIn.files&&fileIn.files[0];if(!file)return;
+    var url=URL.createObjectURL(file);var probe=new Image();
+    probe.onload=function(){var r=probe.width/probe.height,lay=r>4.5?'lrl':(r<1.1?'tb':'lr');laySel.value=lay;layWrap.hidden=false;S.file=url;loadImage(url,file.name,lay);};
+    probe.onerror=function(){hint.textContent='That file could not be opened as an image. Try a PNG, JPEG, JPS or PNS stereo pair.';};
+    probe.src=url;
+  });
+  laySel.addEventListener('change',function(){if(S.file)loadImage(S.file,S.name,laySel.value);});}
+  if(opts.src){loadImage(opts.src,opts.name||'Stereo screenshot',opts.layout||'lr');}
+  else{var W=960,H=540;setPair(demoEye(-1,W,H),demoEye(1,W,H),'Demo scene, rendered in your browser');}
+}
+
+/* ---------- router ---------- */
+var VIEWS=['compatibility','apis','fixes','outputs'];
+var demoBuilt=false;
+function show(view,arg){
+  document.querySelectorAll('[data-view]').forEach(function(v){v.hidden=v.dataset.view!==view;});
+  document.querySelectorAll('.nav a.link, .mnav a').forEach(function(a){
+    var t=a.getAttribute('href').slice(1);
+    var on=(t===view)||(view==='game'&&t==='compatibility');
+    if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');
+  });
+  if(view==='game')renderGame(arg);
+  else document.title=view==='home'?'Stereopticon':({compatibility:'Game compatibility',apis:'API support',fixes:'Fix guide',outputs:'3D outputs'}[view]+' · Stereopticon');
+  if(view==='outputs'&&!demoBuilt){demoBuilt=true;makeViewer(document.getElementById('demo-viewer'),{demo:true});}
+  var m=document.querySelector('.mnav');if(m)m.open=false;
+}
+function route(){
+  var h=decodeURIComponent(location.hash.slice(1));
+  if(h.indexOf('game-')===0){show('game',h.slice(5));window.scrollTo(0,0);return;}
+  if(VIEWS.indexOf(h)>=0){show(h);window.scrollTo(0,0);return;}
+  show('home');
+  if(h){var el=document.getElementById(h);if(el)el.scrollIntoView();}
+}
+document.addEventListener('click',function(e){
+  var a=e.target.closest('[data-jump]');if(!a)return;
+  var el=document.getElementById(a.dataset.jump);if(el){e.preventDefault();el.scrollIntoView({behavior:reduceMotion?'auto':'smooth'});}
+});
+window.addEventListener('hashchange',route);
+
+/* ---------- theme, hero, copy ---------- */
+var root=document.documentElement,KEY='stereopticon-theme';
+try{var saved=localStorage.getItem(KEY);if(saved==='light'||saved==='dark')root.setAttribute('data-theme',saved);}catch(e){}
+document.getElementById('theme-toggle').addEventListener('click',function(){
+  var cur=root.getAttribute('data-theme');
+  if(!cur)cur=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';
+  var next=cur==='dark'?'light':'dark';root.setAttribute('data-theme',next);
+  try{localStorage.setItem(KEY,next);}catch(e){}
+});
+(function hero(){
+  var pair=document.getElementById('pair'),wig=document.getElementById('wiggle');if(!pair)return;
+  var wl=document.getElementById('wl'),wr=document.getElementById('wr');
+  var bPair=document.getElementById('v-pair'),bWig=document.getElementById('v-wiggle');
+  var note=document.getElementById('view-note'),timer=null,flip=false,pairText=note.textContent;
+  function setMode(m){
+    var w=m==='wiggle';bPair.setAttribute('aria-pressed',String(!w));bWig.setAttribute('aria-pressed',String(w));
+    pair.hidden=w;wig.hidden=!w;clearInterval(timer);timer=null;
+    if(w){note.textContent='Left and right views, alternating. The near hills stay put while the far ones shift.';
+      timer=setInterval(function(){flip=!flip;wl.setAttribute('visibility',flip?'hidden':'visible');wr.setAttribute('visibility',flip?'visible':'hidden');},160);}
+    else note.textContent=pairText;
+  }
+  bPair.addEventListener('click',function(){setMode('pair');});
+  bWig.addEventListener('click',function(){setMode('wiggle');});
+})();
+var cb=document.getElementById('copy-email');
+if(cb)cb.addEventListener('click',function(){
+  var el=document.getElementById('contact-email');
+  function sel(){var r=document.createRange();r.selectNodeContents(el);var s=getSelection();s.removeAllRanges();s.addRange(r);cb.textContent='Selected';}
+  try{navigator.clipboard.writeText(el.textContent).then(function(){cb.textContent='Copied';},sel);}catch(e){sel();}
+  setTimeout(function(){cb.textContent='Copy';},2000);
+});
+
+function start(data,gh){
+  DATA=data;GAMES=data.games;GH=gh||null;
+  GAMES.forEach(function(g){if(g.api==='DX11')g.api='DX10/11';});
+  renderSummary();renderApis();setupFilters();renderList();renderExcluded();
+document.getElementById('report-generic').href=issueUrl(null);
+  route();
+}
+var embedded=document.getElementById('games-data');
+if(embedded){start(JSON.parse(embedded.textContent));}
+else{
+  Promise.all([
+    fetch('data/games.json').then(function(r){if(!r.ok)throw new Error(r.status);return r.json();}),
+    fetch('data/github.json').then(function(r){return r.ok?r.json():null;}).catch(function(){return null;})
+  ]).then(function(v){start(v[0],v[1]);}).catch(function(){
+    route();
+    var el=document.getElementById('compat-summary');
+    if(el)el.innerHTML='<p>The game list could not be loaded. Reload the page, or see the data on <a href="'+SITE_REPO+'/tree/main/games" style="color:var(--accent)">GitHub</a>.</p>';
+  });
+}
+})();
+
+</script>
+
+</body>
+</html>

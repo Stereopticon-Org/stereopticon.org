@@ -1,0 +1,7 @@
+name: Tomb Raider (2013)
+api: DX10/11
+source: 3dv-direct
+status: mostly
+install:
+- 3D-Vision-Direct/DX11/32-bit
+notes: Game supports 3D Vision Direct Mode and HD3D. Use the `EOSStub` subfolder if you need Epic Online Services disabled for SR Weave cohabitation.

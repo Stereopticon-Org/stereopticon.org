@@ -1,0 +1,6 @@
+name: Final Fantasy IV (3D Remake)
+api: OpenGL
+source: ogl-qb
+status: untested
+install:
+- OpenGL-Quad-Buffer-Stereo/32-bit

@@ -1,0 +1,8 @@
+name: 'The Sims 2: University'
+api: DX9
+source: injector
+status: untested
+install:
+- Stereo-Injector/DX9/32-bit
+iz3d_profile: true
+notes: Targets "Sims2EP1.exe", might just be expansion pack or all of The Sims 2.

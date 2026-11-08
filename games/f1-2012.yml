@@ -1,0 +1,6 @@
+name: F1 2012
+api: HD3D
+source: hd3d
+status: untested
+install:
+- HD3D/32-bit

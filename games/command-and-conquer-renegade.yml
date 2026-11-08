@@ -1,0 +1,8 @@
+name: 'Command & Conquer: Renegade'
+api: DX8
+source: injector
+status: untested
+install:
+- Stereo-Injector/DX8
+iz3d_profile: true
+notes: Single player only.

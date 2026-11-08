@@ -1,0 +1,50 @@
+name: Approved report to pull request
+
+# A maintainer adds the `approved` label to a "Game test report" issue.
+# This turns the report into a pull request that updates games/<game>.yml
+# and copies the screenshots into shots/. Nothing changes on the site until
+# that pull request is merged.
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  report:
+    if: github.event.label.name == 'approved' && contains(github.event.issue.labels.*.name, 'compat-report')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml
+      - name: Apply the report
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/apply_report.py
+      - name: Validate
+        run: python scripts/build_site.py --check
+      - name: Read PR text
+        id: text
+        run: |
+          {
+            echo "title=$(cat pr-title.txt)"
+            echo "body<<EOF"
+            cat pr-body.txt
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+          rm pr-title.txt pr-body.txt
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          branch: compat/issue-${{ github.event.issue.number }}
+          commit-message: ${{ steps.text.outputs.title }}
+          title: ${{ steps.text.outputs.title }}
+          body: ${{ steps.text.outputs.body }}
+          labels: compat-report
+          delete-branch: true

@@ -1,0 +1,8 @@
+name: Jet Set Radio
+api: DX9
+source: injector
+status: broken
+install:
+- Stereo-Injector/DX9/32-bit
+iz3d_profile: false
+notes: Only works in mono.

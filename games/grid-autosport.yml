@@ -1,0 +1,7 @@
+name: GRID Autosport
+api: HD3D
+source: hd3d
+status: partial
+install:
+- HD3D/32-bit
+notes: '`hardware_settings_config.xml` needs `stereo enabled="true"`.<br>Only top half of Half SBS visible.'

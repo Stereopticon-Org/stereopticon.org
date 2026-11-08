@@ -1,0 +1,7 @@
+name: Tom Clancy's H.A.W.X 2
+api: DX9
+source: 3dv-auto
+status: untested
+install:
+- Stereo-Injector/DX9/32-bit
+iz3d_profile: true

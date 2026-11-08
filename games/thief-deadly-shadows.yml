@@ -1,0 +1,8 @@
+name: 'Thief: Deadly Shadows'
+api: DX8
+source: injector
+status: partial
+install:
+- Stereo-Injector/DX8
+iz3d_profile: true
+notes: In-game, also heavy artifacts

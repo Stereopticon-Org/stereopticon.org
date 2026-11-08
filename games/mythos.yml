@@ -1,0 +1,8 @@
+name: Mythos
+api: DX9
+source: injector
+status: untested
+install:
+- Stereo-Injector/DX9/32-bit
+iz3d_profile: true
+notes: Mythos (2009) maybe? Not sure which game this is.

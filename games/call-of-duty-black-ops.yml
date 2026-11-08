@@ -1,0 +1,8 @@
+name: 'Call of Duty: Black Ops'
+api: DX9
+source: 3dv-auto
+status: working
+install:
+- Stereo-Injector/DX9/32-bit
+iz3d_profile: true
+notes: Might need to implement more 3D Vision features.

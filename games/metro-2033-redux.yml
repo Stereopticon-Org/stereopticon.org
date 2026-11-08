@@ -1,0 +1,8 @@
+name: Metro 2033 Redux
+api: DX10/11
+source: injector
+status: mostly
+install:
+- Stereo-Injector/DX10-11/64-bit
+iz3d_profile: false
+notes: Minor shader artefacts.

@@ -1,0 +1,247 @@
+# Games left out on purpose. reason: shown as the group heading on the site.
+- name: Battlefield 3
+  reason: Depth Map not loading, better support on HD3D
+  source: 3dv-direct
+- name: DiRT 2
+  reason: Depth Map not loading, better support on HD3D
+  source: 3dv-direct
+- name: DiRT 3
+  reason: Depth Map not loading, better support on HD3D
+  source: 3dv-direct
+- name: DiRT 3 Complete Edition
+  reason: Depth Map not loading, better support on HD3D
+  source: 3dv-direct
+- name: DiRT Showdown
+  reason: Depth Map not loading, better support on HD3D
+  source: 3dv-direct
+- name: DiRT Rally
+  reason: Depth Map not loading, better support on HD3D
+  source: 3dv-direct
+- name: F1 2010
+  reason: Depth Map not loading, better support on HD3D
+  source: 3dv-direct
+- name: F1 2011
+  reason: Depth Map not loading, better support on HD3D
+  source: 3dv-direct
+- name: F1 2012
+  reason: Depth Map not loading, better support on HD3D
+  source: 3dv-direct
+- name: F1 2013
+  reason: Depth Map not loading, better support on HD3D
+  source: 3dv-direct
+- name: GRID 2
+  reason: Depth Map not loading, better support on HD3D
+  source: 3dv-direct
+- name: GRID Autosport
+  reason: Depth Map not loading, better support on HD3D
+  source: 3dv-direct
+- name: World of Warcraft
+  reason: Works on HD3D and 3D Vision Direct Mode, HD3D recommended
+  source: 3dv-direct
+- name: 'Hitman: Absolution'
+  reason: Works on 3D Vision Direct Mode
+  source: hd3d
+- name: Tomb Raider (2013)
+  reason: Works on 3D Vision Direct Mode
+  source: hd3d
+- name: Crysis 2
+  reason: Native SBS/TAB
+  source: hd3d
+- name: Crysis 3
+  reason: Native SBS/TAB
+  source: hd3d
+- name: Rise of the Tomb Raider
+  reason: Native SBS/TAB
+  source: hd3d
+- name: Shadwen
+  reason: Native SBS/TAB
+  source: hd3d
+- name: Two Worlds II
+  reason: Native SBS/TAB
+  source: hd3d
+- name: Trine 1
+  reason: Native SBS/TAB
+  source: hd3d
+- name: Trine 2
+  reason: Native SBS/TAB
+  source: hd3d
+- name: Trine 3
+  reason: Native SBS/TAB
+  source: hd3d
+- name: World of Warcraft
+  reason: Online Ban Risk
+  source: hd3d
+- name: 'Age of Conan: Unchained'
+  reason: Online Ban Risk
+  source: injector
+- name: Champions Online
+  reason: Online Ban Risk
+  source: injector
+- name: DC Universe Online
+  reason: Online Ban Risk
+  source: injector
+- name: Entropia Universe
+  reason: Online Ban Risk
+  source: injector
+- name: Final Fantasy 14
+  reason: Online Ban Risk
+  source: injector
+- name: TERA Online
+  reason: Online Ban Risk
+  source: injector
+- name: The Lord of the Rings Online
+  reason: Online Ban Risk
+  source: injector
+- name: 'Warcraft III: Reign of Chaos'
+  reason: Online Ban Risk
+  source: injector
+- name: World of Tanks
+  reason: Online Ban Risk
+  source: injector
+- name: Darkspore
+  reason: Game Not Playable
+  source: injector
+- name: Allods Online
+  reason: Online Ban Risk
+  source: injector
+- name: Dark Age of Camelot
+  reason: Online Ban Risk
+  source: injector
+- name: Darkfall Online
+  reason: Online Ban Risk
+  source: injector
+- name: Fury (2007)
+  reason: Online Ban Risk
+  source: injector
+- name: Global Agenda
+  reason: Online Ban Risk
+  source: injector
+- name: Guild Wars
+  reason: Online Ban Risk
+  source: injector
+- name: Monster Hunter Frontier Online
+  reason: Online Ban Risk
+  source: injector
+- name: 'Warhammer Online: Age of Reckoning'
+  reason: Online Ban Risk
+  source: injector
+- name: 'Counter-Strike: Source'
+  reason: VAC Ban Risk
+  source: injector
+- name: 'Day of Defeat: Source'
+  reason: VAC Ban Risk
+  source: injector
+- name: 'Half-Life 2: Deathmatch'
+  reason: VAC Ban Risk
+  source: injector
+- name: Dungeons & Dragons Online
+  reason: Online Ban Risk
+  source: injector
+- name: EVE Online
+  reason: Online Ban Risk
+  source: injector
+- name: EverQuest
+  reason: Online Ban Risk
+  source: injector
+- name: EverQuest 2
+  reason: Online Ban Risk
+  source: injector
+- name: Flyff (Fly For Fun)
+  reason: Online Ban Risk
+  source: injector
+- name: RIFT
+  reason: Online Ban Risk
+  source: injector
+- name: Starcraft II
+  reason: Online Ban Risk
+  source: injector
+- name: Empire Earth II
+  reason: Online Ban Risk
+  source: injector
+- name: Freelancer
+  reason: Online Ban Risk
+  source: injector
+- name: GTR - FIA GT Racing Game
+  reason: Online Ban Risk
+  source: injector
+- name: NASCAR Racing 2003 Season
+  reason: Online Ban Risk
+  source: injector
+- name: 'Tom Clancy''s Rainbow Six 3: Raven Shield'
+  reason: Online Ban Risk
+  source: injector
+- name: 'Deus Ex: Mankind Divided'
+  reason: Native SBS/TAB
+  source: 3dv-auto
+- name: 'DOOM 3: BFG Edition'
+  reason: Native SBS/TAB
+  source: 3dv-auto
+- name: 'Avatar: The Game'
+  reason: Native SBS/TAB
+  source: 3dv-auto
+- name: Sonic Generations
+  reason: Native SBS/TAB
+  source: 3dv-auto
+- name: Battlefield 3
+  reason: Native AMD HD3D
+  source: 3dv-auto
+- name: DiRT 2
+  reason: Native AMD HD3D
+  source: 3dv-auto
+- name: DiRT 3
+  reason: Native AMD HD3D
+  source: 3dv-auto
+- name: DiRT Showdown
+  reason: Native AMD HD3D
+  source: 3dv-auto
+- name: DiRT Rally
+  reason: Native AMD HD3D
+  source: 3dv-auto
+- name: GRID 2
+  reason: Native AMD HD3D
+  source: 3dv-auto
+- name: GRID Autosport
+  reason: Native AMD HD3D
+  source: 3dv-auto
+- name: Tomb Raider (2013)
+  reason: Native AMD HD3D
+  source: 3dv-auto
+- name: 'Aion: The Tower of Eternity'
+  reason: Online Ban Risk
+  source: 3dv-auto
+- name: Diablo III
+  reason: Online Ban Risk
+  source: 3dv-auto
+- name: Hawken
+  reason: Online Ban Risk
+  source: 3dv-auto
+- name: Pirate101
+  reason: Online Ban Risk
+  source: 3dv-auto
+- name: Rusty Hearts
+  reason: Online Ban Risk
+  source: 3dv-auto
+- name: Wizard101
+  reason: Online Ban Risk
+  source: 3dv-auto
+- name: StarCraft II
+  reason: Online Ban Risk
+  source: 3dv-auto
+- name: Aliens vs. Triangles
+  reason: Demo or Benchmark
+  source: 3dv-auto
+- name: Endless City
+  reason: Demo or Benchmark
+  source: 3dv-auto
+- name: Stone Giant
+  reason: Demo or Benchmark
+  source: 3dv-auto
+- name: Supersonic Sled
+  reason: Demo or Benchmark
+  source: 3dv-auto
+- name: Passion Leads Army Benchmark
+  reason: Demo or Benchmark
+  source: 3dv-auto
+- name: 'Unigine: Heaven Benchmark'
+  reason: Demo or Benchmark
+  source: 3dv-auto

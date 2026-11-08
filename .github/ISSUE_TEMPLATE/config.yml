@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: wiz3D bug report
+    url: https://github.com/Stereopticon-Org/wiz3D/issues/new
+    about: Crashes and bugs in wiz3D itself go to the wiz3D repository.
+  - name: Fix guide
+    url: https://stereopticon.org/#fixes
+    about: How to find and fix a broken shader yourself.

@@ -1,0 +1,8 @@
+name: Deus Ex
+api: DX7
+source: injector
+status: broken
+install:
+- Stereo-Injector/DX7
+iz3d_profile: false
+notes: Listed for DX7 testing.

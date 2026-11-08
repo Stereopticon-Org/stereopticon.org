@@ -1,0 +1,8 @@
+name: 'Sam & Max: The Devil''s Playhouse'
+api: DX9
+source: injector
+status: untested
+install:
+- Stereo-Injector/DX9/32-bit
+iz3d_profile: true
+notes: 'Notes Episode 1: The Penal Zone'

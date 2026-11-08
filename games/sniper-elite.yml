@@ -1,0 +1,8 @@
+name: Sniper Elite
+api: DX8
+source: injector
+status: broken
+install:
+- Stereo-Injector/DX8
+iz3d_profile: true
+notes: Game crashes.
