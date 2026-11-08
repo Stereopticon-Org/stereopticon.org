@@ -6,3 +6,6 @@ install:
 - HD3D/32-bit
 - HD3D/64-bit
 notes: Both x86 and x64 working.
+shots:
+- file: thief-2014-1.jpg
+  layout: lr

@@ -5,3 +5,6 @@ status: working
 install:
 - Stereo-Injector/DX8
 iz3d_profile: false
+shots:
+- file: aquanox-1.jpg
+  layout: lr

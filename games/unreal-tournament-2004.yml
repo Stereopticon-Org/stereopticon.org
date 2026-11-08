@@ -5,3 +5,6 @@ status: working
 install:
 - Stereo-Injector/DX9/64-bit
 iz3d_profile: true
+shots:
+- file: unreal-tournament-2004-1.jpg
+  layout: lr

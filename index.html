@@ -315,6 +315,23 @@ p.notes{font-size:16px;line-height:1.65}
 .v-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .v-tools .btn{min-height:38px;padding:0 12px;font-size:14px}
 .v-hint{font-size:14px;color:var(--muted)}
+.v-nav{display:flex;align-items:center;gap:12px}
+.v-nav .icon-btn{width:44px;height:44px;flex:none}
+.v-cap{flex:1;min-width:0;display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 12px}
+.v-cap a{font-weight:600;font-size:17px;color:var(--fg);text-decoration:none}
+.v-cap a:hover{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.v-cap span{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.has-shot{display:inline-flex;vertical-align:-2px;margin-left:8px;color:var(--accent)}
+.has-shot svg{width:15px;height:15px}
+.app-shot{display:block;width:100%;height:auto;border-radius:8px;box-shadow:0 18px 40px rgba(0,0,0,.35)}
+.loom-shots{display:flex;align-items:center;justify-content:center}
+.loom-shots img{display:block;max-width:100%;height:auto;border-radius:10px;box-shadow:0 18px 40px rgba(0,0,0,.35)}
+.only-light{display:none!important}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .only-light{display:block!important}:root:not([data-theme="dark"]) .only-dark{display:none!important}}
+:root[data-theme="light"] .only-light{display:block!important}
+:root[data-theme="light"] .only-dark{display:none!important}
+.project.wide-visual{grid-template-columns:minmax(0,7fr) minmax(0,5fr)}
+@media (max-width:860px){.project.wide-visual{grid-template-columns:1fr}}
 .file-btn{position:relative;overflow:hidden}
 .file-btn input{position:absolute;inset:0;opacity:0;cursor:pointer}
 
@@ -434,6 +451,17 @@ td .plan{color:var(--accent);font-weight:600}
     </div>
   </section>
 
+  <section class="band" id="gallery">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Seen in 3D</span>
+        <h2>Real games, real depth</h2>
+        <p>Stereo screenshots from games running with wiz3D and the native HD3D and 3D Vision paths. They wiggle between the two eyes by default. Pick another mode to view them with red/cyan glasses, cross-eyed, or on a 3D TV.</p>
+      </div>
+      <div class="viewer3d" id="home-gallery"><p class="muted">Loading screenshots…</p></div>
+    </div>
+  </section>
+
   <section class="band" id="projects">
     <div class="wrap">
       <div class="section-head">
@@ -510,8 +538,9 @@ td .plan{color:var(--accent);font-weight:600}
 
   <section class="band" id="stereo-loom">
     <div class="wrap project">
-      <div class="visual loom-visual" style="--knock:var(--deep)">
-        <svg viewBox="0 0 360 320" role="img" aria-label="Stereo Loom mark: a lens-shaped shuttle weaving through three warp threads"><use href="#loom"></use></svg>
+      <div class="visual loom-shots">
+        <img class="only-dark" src="media/stereo-loom-dark.png" width="315" height="405" alt="Stereo Loom's tray menu in dark mode, with options to switch the display into 3D" loading="lazy">
+        <img class="only-light" src="media/stereo-loom-light.png" width="210" height="276" alt="Stereo Loom's tray menu in light mode" loading="lazy">
       </div>
       <div class="project-body">
         <span class="eyebrow">Weaver · MIT</span>
@@ -528,16 +557,16 @@ td .plan{color:var(--accent);font-weight:600}
           <li><span class="k">Formerly</span><span class="v">SR Loom</span></li>
         </ul>
         <div class="btn-row">
-          <a class="btn btn-ghost gh-repo" data-repo="stereo-loom" href="https://github.com/Stereopticon-Org/Stereo-Loom">Source on GitHub</a>
+          <a class="btn btn-ghost gh-repo" data-repo="stereo-loom" href="https://github.com/Stereopticon-Org/SR-Loom">Source on GitHub</a>
         </div>
       </div>
     </div>
   </section>
 
   <section class="band alt" id="launcher">
-    <div class="wrap project">
-      <div class="visual app-visual">
-        <svg viewBox="0 0 512 512" role="img" aria-label="Stereopticon app icon"><rect width="512" height="512" rx="112" fill="#171513"></rect><use href="#eye-l"></use><use href="#eye-r"></use></svg>
+    <div class="wrap project wide-visual">
+      <div class="visual app-visual" style="padding:20px">
+        <img class="app-shot" src="media/stereopticon-app.webp" width="1973" height="1200" alt="The Stereopticon launcher: a game library with per-game 3D settings" loading="lazy">
       </div>
       <div class="project-body">
         <span class="eyebrow">Launcher · LGPL-2.1</span>
@@ -1040,7 +1069,7 @@ function renderList(){
   document.getElementById('result-count').textContent=list.length+(list.length===1?' game':' games');
   document.getElementById('game-rows').innerHTML=list.length?list.map(function(g){
     var n=plain(g.notes); if(n.length>110)n=n.slice(0,107)+'…';
-    return '<tr><td class="name"><a href="#game-'+g.slug+'">'+esc(g.name)+'</a></td><td class="api">'+esc(g.api)+'</td><td class="src">'+esc(SRC[g.source])+'</td><td>'+pill(g.status)+'</td><td class="notes">'+esc(n)+'</td></tr>';
+    return '<tr><td class="name"><a href="#game-'+g.slug+'">'+esc(g.name)+'</a>'+((g.shots&&g.shots.length)?'<span class="has-shot" title="Has a stereo screenshot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Has a stereo screenshot"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg></span>':'')+'</td><td class="api">'+esc(g.api)+'</td><td class="src">'+esc(SRC[g.source])+'</td><td>'+pill(g.status)+'</td><td class="notes">'+esc(n)+'</td></tr>';
   }).join(''):'<tr><td colspan="5" class="muted">No games match. Clear the search or turn statuses back on.</td></tr>';
 }
 function renderExcluded(){
@@ -1098,7 +1127,7 @@ function renderGame(slug){
         '<ul class="check-list">'+CHECKS.map(function(k){var v=assessed?checks[k]:null;return '<li><span>'+k+'</span><span class="v">'+(v==='good'?'Correct':v==='bad'?'Wrong':v==='partial'?'Some issues':'Not checked')+'</span></li>';}).join('')+'</ul></section>'+
       '<section class="card"><h2>Tested it?</h2><p class="muted" style="font-size:15px">Send your result so this page stays accurate.</p><a class="btn btn-primary" href="'+issueUrl(g)+'">Report a result</a></section>'+
     '</aside></div>';
-  if(shots){var sh=g.shots[g.shots.length-1];makeViewer(document.getElementById('game-viewer'),{src:'shots/'+g.slug+'/'+sh.file,layout:sh.layout||'lr',name:sh.issue?'Screenshot from #'+sh.issue:'Stereo screenshot'});}
+  if(shots){makeViewer(document.getElementById('game-viewer'),{list:shotList([g]).map(function(it,i,a){it.name=g.name+(a.length>1?' · '+(i+1):'');it.href='#game-'+g.slug;return it;})});}
 }
 
 /* ---------- stereo viewer ---------- */
@@ -1150,7 +1179,11 @@ function demoEye(eye,W,H){
 }
 
 function makeViewer(root,opts){
+  var LIST=opts.list||null,IDX=0;
+  var ARROW_L='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>';
+  var ARROW_R='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"></path></svg>';
   root.innerHTML='<div class="v-stage"><canvas></canvas><span class="v-tag"></span></div>'+
+    (LIST?'<div class="v-nav"><button type="button" class="icon-btn" data-act="prev" aria-label="Previous screenshot">'+ARROW_L+'</button><div class="v-cap"><a data-cap href="#compatibility"></a><span data-count aria-live="polite"></span></div><button type="button" class="icon-btn" data-act="next" aria-label="Next screenshot">'+ARROW_R+'</button></div>':'')+
     '<div class="v-bar"><div class="seg" role="group" aria-label="Viewing mode">'+MODES.map(function(m){return '<button type="button" data-m="'+m[0]+'" aria-pressed="false">'+m[1]+'</button>';}).join('')+'</div>'+
     '<div class="v-tools"><button type="button" class="btn btn-ghost" data-act="play">Pause</button><button type="button" class="btn btn-ghost" data-act="swap">Swap eyes</button><button type="button" class="btn btn-ghost" data-act="fs">Fullscreen</button>'+
     (opts.demo?'<label class="btn btn-ghost file-btn">Open a screenshot<input type="file" accept="image/*,.jps,.pns" aria-label="Open a stereo screenshot"></label><label class="field" style="flex-direction:row;align-items:center;gap:8px" hidden data-layout-wrap><span>Layout</span><select data-layout><option value="lr">Left | Right</option><option value="rl">Right | Left (cross-eyed)</option><option value="tb">Top / bottom</option><option value="lrl">Parallel + Cross (L | R | L)</option></select></label>':'')+
@@ -1223,8 +1256,25 @@ function makeViewer(root,opts){
     probe.src=url;
   });
   laySel.addEventListener('change',function(){if(S.file)loadImage(S.file,S.name,laySel.value);});}
-  if(opts.src){loadImage(opts.src,opts.name||'Stereo screenshot',opts.layout||'lr');}
+  function show(i){
+    IDX=(i+LIST.length)%LIST.length;var it=LIST[IDX];
+    var cap=root.querySelector('[data-cap]');cap.textContent=it.name;cap.href=it.href||'#compatibility';
+    root.querySelector('[data-count]').textContent=(IDX+1)+' of '+LIST.length;
+    loadImage(it.src,it.name,it.layout||'lr');
+    var nx=LIST[(IDX+1)%LIST.length];if(nx&&nx.src!==it.src){var pre=new Image();pre.src=nx.src;}
+  }
+  if(LIST){
+    root.querySelector('[data-act="prev"]').addEventListener('click',function(){show(IDX-1);});
+    root.querySelector('[data-act="next"]').addEventListener('click',function(){show(IDX+1);});
+    show(opts.start||0);
+  }
+  else if(opts.src){loadImage(opts.src,opts.name||'Stereo screenshot',opts.layout||'lr');}
   else{var W=960,H=540;setPair(demoEye(-1,W,H),demoEye(1,W,H),'Demo scene, rendered in your browser');}
+}
+function shotList(games){
+  var out=[];
+  games.forEach(function(g){(g.shots||[]).forEach(function(sh){out.push({src:'shots/'+g.slug+'/'+sh.file,layout:sh.layout||'lr',name:g.name,href:'#game-'+g.slug});});});
+  return out;
 }
 
 /* ---------- router ---------- */
@@ -1291,6 +1341,8 @@ function start(data,gh){
   DATA=data;GAMES=data.games;GH=gh||null;
   GAMES.forEach(function(g){if(g.api==='DX11')g.api='DX10/11';});
   renderSummary();renderApis();setupFilters();renderList();renderExcluded();
+  var hg=document.getElementById('home-gallery'),hl=shotList(GAMES);
+  if(hg){if(hl.length)makeViewer(hg,{list:hl,start:Math.floor(Math.random()*hl.length)});else hg.innerHTML='';}
 document.getElementById('report-generic').href=issueUrl(null);
   route();
 }

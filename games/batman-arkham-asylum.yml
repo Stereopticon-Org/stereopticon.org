@@ -6,3 +6,6 @@ install:
 - Stereo-Injector/DX9/32-bit
 iz3d_profile: true
 notes: Enables `Nvidia Stereoscopic 3D` in game setting.
+shots:
+- file: batman-arkham-asylum-1.jpg
+  layout: lr

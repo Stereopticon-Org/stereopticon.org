@@ -5,3 +5,6 @@ status: working
 install:
 - Stereo-Injector/DX9/32-bit
 iz3d_profile: true
+shots:
+- file: grand-theft-auto-san-andreas-1.jpg
+  layout: lr

@@ -51,10 +51,9 @@ def main():
     shutil.copy(os.path.join(ROOT, 'index.html'), site)
     if os.path.exists(os.path.join(ROOT, 'CNAME')):
         shutil.copy(os.path.join(ROOT, 'CNAME'), site)
-    if os.path.exists(os.path.join(ROOT, 'brand')):
-        shutil.copytree(os.path.join(ROOT, 'brand'), os.path.join(site, 'brand'))
-    if os.path.exists(os.path.join(ROOT, 'shots')):
-        shutil.copytree(os.path.join(ROOT, 'shots'), os.path.join(site, 'shots'))
+    for folder in ('brand', 'media', 'shots'):
+        if os.path.exists(os.path.join(ROOT, folder)):
+            shutil.copytree(os.path.join(ROOT, folder), os.path.join(site, folder))
     with open(os.path.join(site, 'data', 'games.json'), 'w', encoding='utf-8') as f:
         json.dump({'games': games, 'excluded': excluded}, f, ensure_ascii=False, separators=(',', ':'))
     ms = fetch_milestones()

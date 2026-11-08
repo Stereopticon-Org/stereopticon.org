@@ -6,3 +6,8 @@ install:
 - Stereo-Injector/DX10-11/64-bit
 iz3d_profile: false
 notes: Minor shader artefacts.
+shots:
+- file: metro-2033-redux-1.jpg
+  layout: lr
+- file: metro-2033-redux-2.jpg
+  layout: lr

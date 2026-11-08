@@ -5,3 +5,10 @@ status: mostly
 install:
 - 3D-Vision-Direct/DX11/32-bit
 notes: Game supports 3D Vision Direct Mode and HD3D. Use the `EOSStub` subfolder if you need Epic Online Services disabled for SR Weave cohabitation.
+shots:
+- file: tomb-raider-2013-1.jpg
+  layout: lr
+- file: tomb-raider-2013-2.jpg
+  layout: lr
+- file: tomb-raider-2013-3.jpg
+  layout: lr

@@ -5,3 +5,6 @@ status: working
 install:
 - 3D-Vision-Direct/DX11/32-bit
 notes: DX11 output only.
+shots:
+- file: oil-rush-1.jpg
+  layout: lr

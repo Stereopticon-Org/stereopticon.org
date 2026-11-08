@@ -4,3 +4,6 @@ source: hd3d
 status: working
 install:
 - HD3D/32-bit
+shots:
+- file: deus-ex-human-revolution-1.jpg
+  layout: lr

@@ -5,3 +5,6 @@ status: working
 install:
 - 3D-Vision-Direct/DX9/32-bit
 notes: Game must be set to 120Hz.
+shots:
+- file: hard-reset-1.jpg
+  layout: lr

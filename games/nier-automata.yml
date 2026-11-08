@@ -5,3 +5,6 @@ status: working
 install:
 - Stereo-Injector/DX10-11/64-bit
 iz3d_profile: false
+shots:
+- file: nier-automata-1.jpg
+  layout: lr

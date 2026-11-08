@@ -6,3 +6,6 @@ install:
 - Stereo-Injector/DX10-11/32-bit
 iz3d_profile: false
 notes: DX11. `-stereo 1` command line argument.
+shots:
+- file: max-payne-3-1.jpg
+  layout: lr

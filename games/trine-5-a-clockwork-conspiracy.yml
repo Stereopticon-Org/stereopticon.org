@@ -6,3 +6,6 @@ install:
 - Stereo-Injector/DX10-11/64-bit
 iz3d_profile: false
 notes: Raindrops hitting the ground make a puff of smoke in the right eye instead of ripples.
+shots:
+- file: trine-5-a-clockwork-conspiracy-1.jpg
+  layout: lr

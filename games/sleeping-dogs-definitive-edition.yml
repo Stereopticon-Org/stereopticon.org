@@ -5,3 +5,8 @@ status: working
 install:
 - HD3D/64-bit
 notes: Undocumented AMD HD3D support.
+shots:
+- file: sleeping-dogs-definitive-edition-1.jpg
+  layout: lr
+- file: sleeping-dogs-definitive-edition-2.jpg
+  layout: lr
