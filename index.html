@@ -125,6 +125,8 @@ section.band > .wrap{padding-block:88px}
 .project .visual{display:flex;align-items:center;justify-content:center;padding:40px;border-radius:var(--radius);background:var(--deep);border:1px solid var(--line);min-width:0}
 .project .visual svg{width:100%;height:auto;display:block}
 .project-body{display:flex;flex-direction:column;gap:22px;min-width:0}
+.project-body h2 .h-logo{width:48px;height:48px;flex:none;border-radius:11px}
+.project-body h2.with-logo{display:flex;align-items:center;gap:14px}
 .project-body h2{font-size:clamp(30px,3.6vw,42px);letter-spacing:-.025em;line-height:1.1}
 .project-body .tag{font-family:var(--font-serif);font-style:italic;font-size:20px;color:var(--muted)}
 .project-body .copy{display:flex;flex-direction:column;gap:14px;max-width:38em}
@@ -325,7 +327,7 @@ p.notes{font-size:16px;line-height:1.65}
 .has-shot svg{width:15px;height:15px}
 .app-shot{display:block;width:100%;height:auto;border-radius:8px;box-shadow:0 18px 40px rgba(0,0,0,.35)}
 .loom-shots{display:flex;align-items:center;justify-content:center}
-.loom-shots img{display:block;max-width:100%;height:auto;border-radius:10px;box-shadow:0 18px 40px rgba(0,0,0,.35)}
+.loom-shots img{display:block;width:280px;max-width:100%;height:auto;border-radius:10px;box-shadow:0 18px 40px rgba(0,0,0,.35)}
 .only-light{display:none!important}
 @media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .only-light{display:block!important}:root:not([data-theme="dark"]) .only-dark{display:none!important}}
 :root[data-theme="light"] .only-light{display:block!important}
@@ -371,9 +373,19 @@ td .plan{color:var(--accent);font-weight:600}
 .mnav .panel a{padding:11px 12px;border-radius:6px;text-decoration:none;color:var(--fg);font-size:15px}
 .mnav .panel a:hover,.mnav .panel a[aria-current="page"]{background:var(--bg)}
 @media (max-width:960px){.nav a.link{display:none}.mnav{display:block}}
+@media (max-width:520px){.nav > .gh-link{display:none}.nav{gap:2px}}
+@media (max-width:380px){.site-header .brand svg{height:21px}.mnav summary{padding:0 10px}}
 .wiz-type{margin:0;font-size:clamp(56px,8vw,88px);font-weight:700;letter-spacing:-.045em;line-height:1}
 .api-chips{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
 .api-chips li{font:500 12px var(--font-mono);border:1px solid var(--line-strong);border-radius:999px;padding:5px 10px;color:var(--muted)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.search-panel{position:fixed;z-index:40;top:calc(env(safe-area-inset-top,0px) + 68px);right:max(16px,calc((100vw - 1160px)/2 + 20px));width:min(400px,calc(100vw - 32px));background:var(--surface);border:1px solid var(--line-strong);border-radius:12px;padding:8px;box-shadow:0 18px 40px rgba(0,0,0,.35)}
+.search-panel input{width:100%;font:400 16px var(--font-sans);color:var(--fg);background:var(--bg);border:1px solid var(--line-strong);border-radius:8px;min-height:44px;padding:0 12px}
+.search-results{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;max-height:min(60vh,420px);overflow-y:auto}
+.search-results a{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 10px;border-radius:8px;text-decoration:none;color:var(--fg);font-size:15px}
+.search-results a:hover,.search-results a:focus-visible,.search-results a.active{background:var(--bg)}
+.search-results .sr-meta{display:flex;align-items:center;gap:8px;flex:none;font:12px var(--font-mono);color:var(--muted)}
+.search-results li.note{padding:10px;font-size:14px;color:var(--muted)}
 </style>
 
 <!-- Shared artwork: Stereopticon stereoview card (round 7), Stereo Loom shuttle, wiz3D wordmark -->
@@ -415,7 +427,17 @@ td .plan{color:var(--accent);font-weight:600}
       <a class="link" href="#outputs">3D outputs</a>
       <a class="link" href="#support">Support</a>
       <a class="icon-btn gh-link" href="https://github.com/Stereopticon-Org" aria-label="Stereopticon on GitHub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg></a>
-      <details class="mnav"><summary aria-label="Menu"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>Menu</summary><div class="panel"><a href="#projects">Projects</a><a href="#compatibility">Compatibility</a><a href="#apis">API support</a><a href="#fixes">Fix guide</a><a href="#outputs">3D outputs</a><a href="#support">Support</a></div></details>
+      <details class="mnav"><summary aria-label="Menu"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>Menu</summary><div class="panel"><a href="#projects">Projects</a><a href="#compatibility">Compatibility</a><a href="#apis">API support</a><a href="#fixes">Fix guide</a><a href="#outputs">3D outputs</a><a href="#support">Support</a><a href="https://github.com/Stereopticon-Org">GitHub</a></div></details>
+      <div class="search">
+        <button class="icon-btn" id="search-btn" type="button" aria-label="Search games" aria-expanded="false" aria-controls="search-panel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></button>
+        <div class="search-panel" id="search-panel" hidden>
+          <form id="search-form" role="search">
+            <label class="sr-only" for="search-q">Search games</label>
+            <input id="search-q" type="search" placeholder="Search games" autocomplete="off">
+          </form>
+          <ul class="search-results" id="search-results"></ul>
+        </div>
+      </div>
       <button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch colour theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg></button>
     </nav>
   </div>
@@ -431,7 +453,7 @@ td .plan{color:var(--accent);font-weight:600}
         <p class="lede">Stereopticon is the home of three open projects that put PC games into real stereo 3D: a wrapper that renders each eye, a weaver for glasses-free screens, and a launcher that ties them together.</p>
         <div class="btn-row">
           <a class="btn btn-primary" href="#projects">See the projects <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></a>
-          <a class="btn btn-ghost oc-link" href="https://opencollective.com/stereopticon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>Back the project</a>
+          <a class="btn btn-ghost" href="#support"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>Support the project</a>
         </div>
         <p class="license-line">wiz3D · LGPL-2.1 &nbsp;/&nbsp; Stereopticon · LGPL-2.1 &nbsp;/&nbsp; Stereo Loom · MIT</p>
       </div>
@@ -443,7 +465,7 @@ td .plan{color:var(--accent);font-weight:600}
         <figcaption class="viewer-caption">
           <p id="view-note">This mark is a real stereo pair. Relax your eyes into parallel view and the far hills drop back.</p>
           <div class="seg" role="group" aria-label="How to view the mark">
-            <button type="button" id="v-pair" aria-pressed="true">Pair</button>
+            <button type="button" id="v-pair" aria-pressed="true">Side by side</button>
             <button type="button" id="v-wiggle" aria-pressed="false">Wiggle</button>
           </div>
         </figcaption>
@@ -456,7 +478,7 @@ td .plan{color:var(--accent);font-weight:600}
       <div class="section-head">
         <span class="eyebrow">Seen in 3D</span>
         <h2>Real games, real depth</h2>
-        <p>Stereo screenshots from games running with wiz3D and the native HD3D and 3D Vision paths. They wiggle between the two eyes by default. Pick another mode to view them with red/cyan glasses, cross-eyed, or on a 3D TV.</p>
+        <p>Stereo screenshots from games running with wiz3D and the native HD3D and 3D Vision paths. They open in cross-eyed view. Switch to wiggle to see the depth without any practice, or pick red/cyan glasses or a 3D TV.</p>
       </div>
       <div class="viewer3d" id="home-gallery"><p class="muted">Loading screenshots…</p></div>
     </div>
@@ -539,12 +561,12 @@ td .plan{color:var(--accent);font-weight:600}
   <section class="band" id="stereo-loom">
     <div class="wrap project">
       <div class="visual loom-shots">
-        <img class="only-dark" src="media/stereo-loom-dark.png" width="315" height="405" alt="Stereo Loom's tray menu in dark mode, with options to switch the display into 3D" loading="lazy">
-        <img class="only-light" src="media/stereo-loom-light.png" width="210" height="276" alt="Stereo Loom's tray menu in light mode" loading="lazy">
+        <img class="only-light" src="media/stereo-loom-dark.png" width="315" height="405" alt="Stereo Loom's tray menu in dark mode, with options to switch the display into 3D" loading="lazy">
+        <img class="only-dark" src="media/stereo-loom-light.png" width="210" height="276" alt="Stereo Loom's tray menu in light mode" loading="lazy">
       </div>
       <div class="project-body">
         <span class="eyebrow">Weaver · MIT</span>
-        <h2>Stereo Loom</h2>
+        <h2 class="with-logo"><img class="h-logo" src="brand/stereo-loom-icon-dark.svg" width="48" height="48" alt="">Stereo Loom</h2>
         <p class="tag">Weaves any stereo format onto glasses-free 3D displays.</p>
         <div class="copy">
           <p>Eye-tracked 3D monitors expect their own interleaved image. Stereo Loom takes an ordinary side-by-side stereo picture and hands it to the display's weaver, so games and players that already output stereo just work.</p>
@@ -570,7 +592,7 @@ td .plan{color:var(--accent);font-weight:600}
       </div>
       <div class="project-body">
         <span class="eyebrow">Launcher · LGPL-2.1</span>
-        <h2>Stereopticon</h2>
+        <h2 class="with-logo"><img class="h-logo" src="brand/stereopticon-icon-dark.svg" width="48" height="48" alt="">Stereopticon</h2>
         <p class="tag">One place to play your library in 3D.</p>
         <div class="copy">
           <p>The Stereopticon app is a hub for stereo 3D gaming. It finds your games, sets up the right wrapper, mods, shaders and fixes for each one, and sends the output to whatever 3D display you own.</p>
@@ -600,12 +622,12 @@ td .plan{color:var(--accent);font-weight:600}
     <div class="wrap support">
       <div class="copy">
         <span class="eyebrow">Support the work</span>
-        <h2 style="font-size:clamp(30px,3.6vw,42px);letter-spacing:-.025em;line-height:1.1">Funded in the open</h2>
-        <p>Stereopticon is a small group of volunteers. Money goes to the projects, not to any one person, and pays for development time, test hardware and the occasional game licence for testing.</p>
-        <p>We are on <strong>Open Collective</strong>, fiscally hosted by <strong>Open Source Collective</strong>. Every donation and every expense is published, so you can see where your support goes.</p>
+        <h2 style="font-size:clamp(30px,3.6vw,42px);letter-spacing:-.025em;line-height:1.1">Support the projects</h2>
+        <p>Stereopticon is a small group of volunteers. Support pays for development time, test hardware and the occasional game licence for testing.</p>
+        <p>We are setting up a home for project funding. Until then, you can support development through GitHub Sponsors.</p>
         <div class="btn-row">
-          <a class="btn btn-primary oc-link" href="https://opencollective.com/stereopticon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>Back us on Open Collective</a>
-          <a class="btn btn-ghost" href="https://github.com/sponsors/effcol">Sponsor on GitHub</a>
+          
+          <a class="btn btn-primary" href="https://github.com/sponsors/effcol"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>Sponsor on GitHub</a>
         </div>
       </div>
       <aside class="ledger" aria-labelledby="partners-h">
@@ -920,7 +942,6 @@ td .plan{color:var(--accent);font-weight:600}
       <h4>Community</h4>
       <ul>
         <li><a class="gh-link" href="https://github.com/Stereopticon-Org">GitHub</a></li>
-        <li><a class="oc-link" href="https://opencollective.com/stereopticon">Open Collective</a></li>
         <li><a href="https://github.com/sponsors/effcol">GitHub Sponsors</a></li>
       </ul>
     </div>
@@ -1190,7 +1211,7 @@ function makeViewer(root,opts){
     '</div></div><p class="v-hint" aria-live="polite"></p>';
   var stage=root.querySelector('.v-stage'),cv=root.querySelector('canvas'),ctx=cv.getContext('2d'),tag=root.querySelector('.v-tag'),hint=root.querySelector('.v-hint');
   var playBtn=root.querySelector('[data-act="play"]');
-  var S={mode:'wiggle',L:null,R:null,swap:false,playing:!reduceMotion,flip:false,timer:null,name:'Demo scene, rendered in your browser',img:null,file:'',cache:{}};
+  var S={mode:opts.mode||'wiggle',L:null,R:null,swap:false,playing:!reduceMotion,flip:false,timer:null,name:'Demo scene, rendered in your browser',img:null,file:'',cache:{}};
   function eyes(){return S.swap?[S.R,S.L]:[S.L,S.R];}
   function size(w,h){if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h;}}
   function draw(){
@@ -1305,6 +1326,38 @@ document.addEventListener('click',function(e){
 });
 window.addEventListener('hashchange',route);
 
+/* ---------- header search ---------- */
+(function(){
+  var btn=document.getElementById('search-btn'),panel=document.getElementById('search-panel'),q=document.getElementById('search-q'),ul=document.getElementById('search-results'),form=document.getElementById('search-form');
+  var hits=[],active=-1;
+  function open(o){panel.hidden=!o;btn.setAttribute('aria-expanded',String(o));if(o){q.focus();q.select();run();}}
+  function run(){
+    var t=q.value.trim().toLowerCase();
+    if(!GAMES.length){ul.innerHTML='<li class="note">Loading the game list\u2026</li>';return;}
+    if(!t){ul.innerHTML='<li class="note">Type a game name. '+GAMES.length+' games are listed.</li>';hits=[];return;}
+    hits=GAMES.filter(function(g){return g.name.toLowerCase().indexOf(t)>=0;}).sort(function(a,b){
+      var as=a.name.toLowerCase().indexOf(t)===0?0:1,bs=b.name.toLowerCase().indexOf(t)===0?0:1;return as-bs||a.name.localeCompare(b.name);}).slice(0,8);
+    active=-1;
+    ul.innerHTML=hits.length?hits.map(function(g){return '<li><a href="#game-'+g.slug+'"><span>'+esc(g.name)+'</span><span class="sr-meta">'+esc(g.api)+' '+pill(g.status)+'</span></a></li>';}).join('')+
+      '<li><a href="#compatibility" data-all><span>See all results in the compatibility list</span></a></li>':'<li class="note">No games match \u201c'+esc(q.value.trim())+'\u201d.</li>';
+  }
+  function toList(){var t=q.value.trim();var inp=document.getElementById('q');inp.value=t;F.q=t.toLowerCase();renderList();open(false);location.hash='compatibility';}
+  btn.addEventListener('click',function(){open(panel.hidden);});
+  q.addEventListener('input',run);
+  q.addEventListener('keydown',function(e){
+    var links=ul.querySelectorAll('a');
+    if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();if(!links.length)return;active=(active+(e.key==='ArrowDown'?1:-1)+links.length)%links.length;links.forEach(function(a,i){a.classList.toggle('active',i===active);});links[active].scrollIntoView({block:'nearest'});}
+    if(e.key==='Escape'){open(false);btn.focus();}
+  });
+  form.addEventListener('submit',function(e){e.preventDefault();var links=ul.querySelectorAll('a');
+    if(active>=0&&links[active]){if(links[active].hasAttribute('data-all'))toList();else{location.hash=links[active].getAttribute('href').slice(1);open(false);}return;}
+    if(hits.length===1){location.hash='game-'+hits[0].slug;open(false);return;}
+    toList();});
+  ul.addEventListener('click',function(e){var a=e.target.closest('a');if(!a)return;if(a.hasAttribute('data-all')){e.preventDefault();toList();}else open(false);});
+  document.addEventListener('click',function(e){if(!panel.hidden&&!panel.contains(e.target)&&!btn.contains(e.target))open(false);});
+  window.addEventListener('hashchange',function(){if(!panel.hidden)open(false);});
+})();
+
 /* ---------- theme, hero, copy ---------- */
 var root=document.documentElement,KEY='stereopticon-theme';
 try{var saved=localStorage.getItem(KEY);if(saved==='light'||saved==='dark')root.setAttribute('data-theme',saved);}catch(e){}
@@ -1321,7 +1374,7 @@ document.getElementById('theme-toggle').addEventListener('click',function(){
   var note=document.getElementById('view-note'),timer=null,flip=false,pairText=note.textContent;
   function setMode(m){
     var w=m==='wiggle';bPair.setAttribute('aria-pressed',String(!w));bWig.setAttribute('aria-pressed',String(w));
-    pair.hidden=w;wig.hidden=!w;clearInterval(timer);timer=null;
+    pair.toggleAttribute('hidden',w);wig.toggleAttribute('hidden',!w);clearInterval(timer);timer=null;
     if(w){note.textContent='Left and right views, alternating. The near hills stay put while the far ones shift.';
       timer=setInterval(function(){flip=!flip;wl.setAttribute('visibility',flip?'hidden':'visible');wr.setAttribute('visibility',flip?'visible':'hidden');},160);}
     else note.textContent=pairText;
@@ -1342,7 +1395,7 @@ function start(data,gh){
   GAMES.forEach(function(g){if(g.api==='DX11')g.api='DX10/11';});
   renderSummary();renderApis();setupFilters();renderList();renderExcluded();
   var hg=document.getElementById('home-gallery'),hl=shotList(GAMES);
-  if(hg){if(hl.length)makeViewer(hg,{list:hl,start:Math.floor(Math.random()*hl.length)});else hg.innerHTML='';}
+  if(hg){if(hl.length)makeViewer(hg,{list:hl,mode:'cross',start:Math.floor(Math.random()*hl.length)});else hg.innerHTML='';}
 document.getElementById('report-generic').href=issueUrl(null);
   route();
 }
