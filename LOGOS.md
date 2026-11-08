@@ -4,6 +4,8 @@ The Stereopticon and Stereo Loom logos, and the names Stereopticon, wiz3D and St
 identify these projects. They are **not** covered by the MIT licence for this site's code
 or the CC BY 4.0 licence for the game data. All rights in the logos are reserved.
 
+Official files are in [`brand/`](brand/): SVG and PNG, for dark and light backgrounds.
+
 ## You can
 
 - Use the names and unmodified logos to refer to the projects, for example in an article,

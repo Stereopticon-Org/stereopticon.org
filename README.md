@@ -12,6 +12,7 @@ The site is a single static page, built and deployed to GitHub Pages by GitHub A
 | `games/<slug>.yml` | One file per game. The file name is the game's URL: `games/left-4-dead-2.yml` is `stereopticon.org/#game-left-4-dead-2`. |
 | `games/_excluded.yml` | Games left out on purpose, with the reason. |
 | `shots/<slug>/` | Stereo screenshots for a game. |
+| `brand/` | Official logo files (SVG and PNG). Served at `stereopticon.org/brand/`. See `LOGOS.md` for how they may be used. |
 | `scripts/build_site.py` | Validates the game files and builds `_site/`. |
 | `scripts/apply_report.py` | Turns an approved test report into changes to a game file. |
 | `scripts/import_readme.py` | One-off import from the old tables in wiz3D's README. |
