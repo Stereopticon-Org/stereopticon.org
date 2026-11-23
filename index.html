@@ -107,6 +107,10 @@ section.band > .wrap{padding-block:88px}
 .stage-mark svg{height:56px;width:auto}
 .stage .step{font-family:var(--font-mono);font-size:12px;color:var(--muted)}
 .stage h3{font-size:26px;letter-spacing:-.02em}
+.h3-link{color:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.h3-link .h3-gh{width:18px;height:18px;opacity:.45;transition:opacity .15s,transform .15s}
+.h3-link:hover{color:var(--accent)}
+.h3-link:hover .h3-gh{opacity:1;transform:translate(2px,-2px)}
 .stage p.desc{font-family:var(--font-serif);font-style:italic;font-size:17px;line-height:1.5;color:var(--muted)}
 .stage .meta{margin-top:auto;padding-top:10px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
 .chip{display:inline-flex;align-items:center;gap:6px;font:500 12px/1 var(--font-mono);color:var(--fg);border:1px solid var(--line-strong);border-radius:999px;padding:6px 10px}
@@ -529,7 +533,7 @@ td .plan{color:var(--accent);font-weight:600}
             <span class="step">launch</span>
           </div>
           <span class="eyebrow">Launcher</span>
-          <h3>Stereopticon</h3>
+          <h3><a class="h3-link gh-repo" data-repo="stereopticon" href="https://github.com/Stereopticon-Org/Stereopticon" title="Stereopticon on GitHub">Stereopticon<svg class="h3-gh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"></path></svg></a></h3>
           <p class="desc">Universal stereo 3D gaming hub for games, mods, shaders and fixes.</p>
           <div class="meta"><span class="chip">LGPL-2.1</span><a class="more" href="#launcher">Details <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></a></div>
         </article>
@@ -539,9 +543,9 @@ td .plan{color:var(--accent);font-weight:600}
             <span class="step">render</span>
           </div>
           <span class="eyebrow">Wrapper</span>
-          <h3>wiz3D</h3>
+          <h3><a class="h3-link gh-repo" data-repo="wiz3D" href="https://github.com/Stereopticon-Org/wiz3D" title="wiz3D on GitHub">wiz3D<svg class="h3-gh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"></path></svg></a></h3>
           <p class="desc">Universal stereoscopic 3D wrapper for DirectX, OpenGL, HD3D and 3D Vision.</p>
-          <div class="meta"><span class="chip">LGPL-2.1</span><a class="more" href="#wiz3d">Details <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></a></div>
+          <div class="meta"><span class="chip">LGPL-2.1</span><a class="more" href="#compatibility">Supported games <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></a></div>
         </article>
         <article class="stage" style="--knock:var(--surface)">
           <div class="stage-top">
@@ -549,7 +553,7 @@ td .plan{color:var(--accent);font-weight:600}
             <span class="step">display</span>
           </div>
           <span class="eyebrow">Weaver</span>
-          <h3>Stereo Loom</h3>
+          <h3><a class="h3-link gh-repo" data-repo="stereo-loom" href="https://github.com/Stereopticon-Org/StereoLoom" title="Stereo Loom on GitHub">Stereo Loom<svg class="h3-gh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"></path></svg></a></h3>
           <p class="desc">Weaves any stereo format onto glasses-free 3D displays.</p>
           <div class="meta"><span class="chip accent">MIT</span><a class="more" href="#stereo-loom">Details <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></a></div>
         </article>
