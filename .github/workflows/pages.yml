@@ -5,7 +5,7 @@ on:
     branches: [main]
   pull_request:
   schedule:
-    - cron: "17 4 * * *"   # daily refresh of milestone progress
+    - cron: "17 */6 * * *"   # every 6 hours: milestone progress and new releases
   workflow_dispatch:
 
 permissions:
@@ -25,7 +25,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install pyyaml
+      - run: pip install pyyaml markdown
       - name: Validate game data
         run: python scripts/build_site.py --check
       - name: Build

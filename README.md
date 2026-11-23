@@ -13,6 +13,7 @@ The site is a single static page, built and deployed to GitHub Pages by GitHub A
 | `games/_excluded.yml` | Games left out on purpose, with the reason. |
 | `shots/<slug>/` | Stereo screenshots for a game. |
 | `media/` | Product screenshots used on the site (Stereopticon app, Stereo Loom). |
+| `posts/` | News posts written by hand, as Markdown. Images go in `posts/img/`. |
 | `brand/` | Official logo files (SVG and PNG). Served at `stereopticon.org/brand/`. See `LOGOS.md` for how they may be used. |
 | `scripts/build_site.py` | Validates the game files and builds `_site/`. |
 | `scripts/apply_report.py` | Turns an approved test report into changes to a game file. |
@@ -59,6 +60,26 @@ reports:                 # added automatically from approved test reports
 4. Merge the pull request. The site rebuilds and deploys in about a minute.
 
 To change anything else, edit the YAML file on GitHub and open a pull request. The **Edit on GitHub** link on each game page goes straight to the file.
+
+## News
+
+The News page combines two things, newest first:
+
+- **Releases** of wiz3D, Stereo Loom and the Stereopticon launcher, pulled from GitHub at every build. The site rebuilds every 6 hours, so a new release appears within a few hours. Run **Actions → Build and deploy site → Run workflow** to show it straight away. Release images are copied into the site so they keep working.
+- **Posts** in `posts/`, for anything that isn't a release. Name the file `YYYY-MM-DD-short-name.md`:
+
+```markdown
+---
+title: Stereo Loom gets a tray menu
+date: 2026-11-23
+summary: One line for the news list and the feed.
+project: Stereo Loom      # optional: wiz3D, Stereo Loom or Stereopticon
+---
+Write the post in Markdown. Images go in posts/img/ and are written as
+![What the image shows](img/tray-menu.png).
+```
+
+A post's address is `stereopticon.org/#post-short-name`. There is also an Atom feed at `stereopticon.org/feed.xml`. The site shows no em dashes: any in release notes or posts are turned into spaced en dashes.
 
 ## Release progress
 

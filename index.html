@@ -372,7 +372,7 @@ td .plan{color:var(--accent);font-weight:600}
 .mnav .panel{position:absolute;right:0;top:48px;z-index:30;background:var(--surface);border:1px solid var(--line-strong);border-radius:10px;padding:6px;display:flex;flex-direction:column;min-width:210px;box-shadow:0 12px 32px rgba(0,0,0,.35)}
 .mnav .panel a{padding:11px 12px;border-radius:6px;text-decoration:none;color:var(--fg);font-size:15px}
 .mnav .panel a:hover,.mnav .panel a[aria-current="page"]{background:var(--bg)}
-@media (max-width:960px){.nav a.link{display:none}.mnav{display:block}}
+@media (max-width:1100px){.nav a.link{display:none}.mnav{display:block}}
 @media (max-width:520px){.nav > .gh-link{display:none}.nav{gap:2px}}
 @media (max-width:380px){.site-header .brand svg{height:21px}.mnav summary{padding:0 10px}}
 .wiz-type{margin:0;font-size:clamp(56px,8vw,88px);font-weight:700;letter-spacing:-.045em;line-height:1}
@@ -386,6 +386,36 @@ td .plan{color:var(--accent);font-weight:600}
 .search-results a:hover,.search-results a:focus-visible,.search-results a.active{background:var(--bg)}
 .search-results .sr-meta{display:flex;align-items:center;gap:8px;flex:none;font:12px var(--font-mono);color:var(--muted)}
 .search-results li.note{padding:10px;font-size:14px;color:var(--muted)}
+.news-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.news-card{border:1px solid var(--line);background:var(--surface);border-radius:var(--radius);padding:22px;display:flex;flex-direction:column;gap:10px;min-width:0;text-decoration:none;color:var(--fg)}
+.news-card:hover{border-color:var(--line-strong)}
+.news-card h3{font-size:18px;line-height:1.3;letter-spacing:-.01em}
+.news-card p{font-size:14px;color:var(--muted);line-height:1.55}
+.news-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;font:12px var(--font-mono);color:var(--muted)}
+.news-meta .chip{font-size:11px;padding:4px 8px}
+@media (max-width:900px){.news-cards{grid-template-columns:1fr}}
+.news-list{display:flex;flex-direction:column;margin:24px 0 72px;border-top:1px solid var(--line)}
+.news-item{display:grid;grid-template-columns:120px minmax(0,1fr);gap:20px;padding:22px 0;border-bottom:1px solid var(--line)}
+.news-item time{font:13px var(--font-mono);color:var(--muted);padding-top:3px}
+.news-item h2{font-size:20px;letter-spacing:-.01em;margin:6px 0}
+.news-item h2 a{color:var(--fg);text-decoration:none}
+.news-item h2 a:hover{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.news-item p{color:var(--muted);font-size:15px;max-width:46em}
+@media (max-width:640px){.news-item{grid-template-columns:1fr;gap:6px}}
+.post-head{display:flex;flex-direction:column;gap:14px;padding-block:48px 28px;max-width:46em}
+.post-head h1{font-size:clamp(30px,4vw,44px);letter-spacing:-.03em;line-height:1.1}
+.post-body{max-width:46em;padding-bottom:40px;font-size:17px;line-height:1.7;overflow-wrap:anywhere}
+.post-body > * + *{margin-top:16px}
+.post-body h1,.post-body h2,.post-body h3,.post-body h4{margin-top:32px;letter-spacing:-.015em;line-height:1.25}
+.post-body h1{font-size:26px}.post-body h2{font-size:23px}.post-body h3{font-size:19px}.post-body h4{font-size:17px}
+.post-body a{color:var(--accent)}
+.post-body ul,.post-body ol{padding-left:24px}
+.post-body li + li{margin-top:6px}
+.post-body img{max-width:100%;height:auto;border-radius:8px}
+.post-body table{min-width:0;display:block;overflow-x:auto;font-size:15px}
+.post-body blockquote{margin:0;border-left:3px solid var(--line-strong);padding-left:16px;color:var(--muted)}
+.post-body hr{border:0;border-top:1px solid var(--line)}
+.post-assets{max-width:46em;margin-bottom:72px}
 </style>
 
 <!-- Shared artwork: Stereopticon stereoview card (round 7), Stereo Loom shuttle, wiz3D wordmark -->
@@ -425,9 +455,10 @@ td .plan{color:var(--accent);font-weight:600}
       <a class="link" href="#apis">API support</a>
       <a class="link" href="#fixes">Fix guide</a>
       <a class="link" href="#outputs">3D outputs</a>
+      <a class="link" href="#news">News</a>
       <a class="link" href="#support">Support</a>
       <a class="icon-btn gh-link" href="https://github.com/Stereopticon-Org" aria-label="Stereopticon on GitHub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg></a>
-      <details class="mnav"><summary aria-label="Menu"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>Menu</summary><div class="panel"><a href="#projects">Projects</a><a href="#compatibility">Compatibility</a><a href="#apis">API support</a><a href="#fixes">Fix guide</a><a href="#outputs">3D outputs</a><a href="#support">Support</a><a href="https://github.com/Stereopticon-Org">GitHub</a></div></details>
+      <details class="mnav"><summary aria-label="Menu"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>Menu</summary><div class="panel"><a href="#projects">Projects</a><a href="#compatibility">Compatibility</a><a href="#apis">API support</a><a href="#fixes">Fix guide</a><a href="#outputs">3D outputs</a><a href="#news">News</a><a href="#support">Support</a><a href="https://github.com/Stereopticon-Org">GitHub</a></div></details>
       <div class="search">
         <button class="icon-btn" id="search-btn" type="button" aria-label="Search games" aria-expanded="false" aria-controls="search-panel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></button>
         <div class="search-panel" id="search-panel" hidden>
@@ -615,6 +646,17 @@ td .plan{color:var(--accent);font-weight:600}
         <div class="btn-row"><a class="btn btn-primary" href="#compatibility">Browse games</a><a class="btn btn-ghost" href="#apis">API support</a></div>
       </div>
       <div style="display:flex;flex-direction:column;gap:14px;min-width:0" id="home-compat"></div>
+    </div>
+  </section>
+
+  <section class="band" id="latest-news" hidden>
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">News</span>
+        <h2>Latest releases and updates</h2>
+      </div>
+      <div class="news-cards" id="home-news"></div>
+      <div class="btn-row" style="margin-top:28px"><a class="btn btn-ghost" href="#news">All news</a></div>
     </div>
   </section>
 
@@ -855,6 +897,22 @@ td .plan{color:var(--accent);font-weight:600}
 </div>
 
 <!-- ===================== OUTPUTS ===================== -->
+<div class="view" data-view="news" hidden>
+  <div class="wrap">
+    <div class="view-head">
+      <span class="eyebrow">News</span>
+      <h1>News</h1>
+      <p>Release notes for wiz3D, Stereo Loom and the Stereopticon launcher, and other project updates. New releases appear here automatically. Follow along in a feed reader with the <a href="feed.xml" style="color:var(--accent)">Atom feed</a>.</p>
+    </div>
+    <div class="chips" id="news-filter" role="group" aria-label="Show news for"></div>
+    <div class="news-list" id="news-list"><p class="muted">Loading news…</p></div>
+  </div>
+</div>
+
+<div class="view" data-view="post" hidden>
+  <div class="wrap" id="post-page"></div>
+</div>
+
 <div class="view" data-view="outputs" hidden>
   <div class="wrap">
     <div class="view-head">
@@ -936,6 +994,8 @@ td .plan{color:var(--accent);font-weight:600}
         <li><a href="#apis">API support</a></li>
         <li><a href="#fixes">Fix guide</a></li>
         <li><a href="#outputs">3D outputs</a></li>
+        <li><a href="#news">News</a></li>
+        <li><a href="feed.xml">News feed (Atom)</a></li>
       </ul>
     </div>
     <div>
@@ -1298,24 +1358,61 @@ function shotList(games){
   return out;
 }
 
+/* ---------- news ---------- */
+var NEWS=null,NEWS_FILTER='all';
+function fmtDate(d){try{return new Date(d+'T12:00:00Z').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});}catch(e){return d;}}
+function newsMeta(it){
+  return '<div class="news-meta"><time datetime="'+esc(it.date)+'">'+esc(fmtDate(it.date))+'</time>'+(it.project?'<span class="chip">'+esc(it.project)+'</span>':'')+
+    (it.kind==='release'?'<span class="chip accent">'+(it.prerelease?'Test release':'Release')+(it.tag?' '+esc(it.tag):'')+'</span>':'')+'</div>';
+}
+function renderNews(){
+  var list=document.getElementById('news-list');if(!list)return;
+  if(!NEWS){list.innerHTML='<p class="muted">News couldn\u2019t be loaded. Release notes are on <a href="'+ORG+'" style="color:var(--accent)">GitHub</a>.</p>';return;}
+  var kinds=[['all','All'],['wiz3D','wiz3D'],['Stereo Loom','Stereo Loom'],['Stereopticon','Stereopticon'],['post','Updates']];
+  document.getElementById('news-filter').innerHTML=kinds.filter(function(k){return k[0]==='all'||NEWS.some(function(it){return k[0]==='post'?it.kind==='post':it.project===k[0];});})
+    .map(function(k){return '<button type="button" class="chip-btn" style="--c:var(--accent)" data-k="'+esc(k[0])+'" aria-pressed="'+(NEWS_FILTER===k[0])+'">'+esc(k[1])+'</button>';}).join('');
+  var items=NEWS.filter(function(it){return NEWS_FILTER==='all'||(NEWS_FILTER==='post'?it.kind==='post':it.project===NEWS_FILTER);});
+  list.innerHTML=items.length?items.map(function(it){return '<article class="news-item"><time datetime="'+esc(it.date)+'">'+esc(fmtDate(it.date))+'</time><div>'+newsMeta(it).replace(/<time[^>]*>[^<]*<\/time>/,'')+'<h2><a href="#post-'+esc(it.id)+'">'+esc(it.title)+'</a></h2><p>'+esc(it.summary)+'</p></div></article>';}).join(''):'<p class="muted" style="padding:20px 0">Nothing here yet.</p>';
+  var home=document.getElementById('home-news'),band=document.getElementById('latest-news');
+  if(home&&band){band.hidden=!NEWS.length;home.innerHTML=NEWS.slice(0,3).map(function(it){return '<a class="news-card" href="#post-'+esc(it.id)+'">'+newsMeta(it)+'<h3>'+esc(it.title)+'</h3><p>'+esc(it.summary)+'</p></a>';}).join('');}
+}
+document.addEventListener('click',function(e){var b=e.target.closest('#news-filter [data-k]');if(!b)return;NEWS_FILTER=b.dataset.k;renderNews();});
+function fmtSize(n){return n>1048576?(n/1048576).toFixed(1)+' MB':Math.round(n/1024)+' KB';}
+function renderPost(id){
+  var root=document.getElementById('post-page');
+  if(!NEWS){root.innerHTML='<div class="post-head"><p class="muted">Loading\u2026</p></div>';return;}
+  var it=NEWS.find(function(x){return x.id===id;});
+  if(!it){root.innerHTML='<div class="post-head"><div class="crumbs"><a href="#news">News</a></div><h1>Post not found</h1><p class="muted">It may have been renamed. See all <a href="#news" style="color:var(--accent)">news</a>.</p></div>';document.title='Not found \u00b7 Stereopticon';return;}
+  document.title=it.title+' \u00b7 Stereopticon';
+  root.innerHTML='<div class="post-head"><div class="crumbs"><a href="#news">News</a></div>'+newsMeta(it)+'<h1>'+esc(it.title)+'</h1></div>'+
+    '<div class="post-body">'+it.html+'</div>'+
+    (it.kind==='release'?'<div class="post-assets card"><h2>Download</h2>'+((it.assets||[]).length?'<ul class="check-list">'+it.assets.map(function(a){return '<li><a href="'+esc(a.url)+'" style="color:var(--accent)">'+esc(a.name)+'</a><span class="v">'+fmtSize(a.size)+'</span></li>';}).join('')+'</ul>':'')+
+      '<div class="btn-row"><a class="btn btn-ghost" href="'+esc(it.url)+'">View on GitHub</a></div></div>':'<div style="height:72px"></div>');
+}
+fetch('data/news.json').then(function(r){if(!r.ok)throw new Error(r.status);return r.json();}).then(function(d){NEWS=d.items||[];}).catch(function(){NEWS=null;}).then(function(){
+  renderNews();var h=location.hash.slice(1);if(h.indexOf('post-')===0)renderPost(decodeURIComponent(h.slice(5)));
+});
+
 /* ---------- router ---------- */
-var VIEWS=['compatibility','apis','fixes','outputs'];
+var VIEWS=['compatibility','apis','fixes','outputs','news'];
 var demoBuilt=false;
 function show(view,arg){
   document.querySelectorAll('[data-view]').forEach(function(v){v.hidden=v.dataset.view!==view;});
   document.querySelectorAll('.nav a.link, .mnav a').forEach(function(a){
     var t=a.getAttribute('href').slice(1);
-    var on=(t===view)||(view==='game'&&t==='compatibility');
+    var on=(t===view)||(view==='game'&&t==='compatibility')||(view==='post'&&t==='news');
     if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');
   });
   if(view==='game')renderGame(arg);
-  else document.title=view==='home'?'Stereopticon':({compatibility:'Game compatibility',apis:'API support',fixes:'Fix guide',outputs:'3D outputs'}[view]+' · Stereopticon');
+  else if(view==='post')renderPost(arg);
+  else document.title=view==='home'?'Stereopticon':({compatibility:'Game compatibility',apis:'API support',fixes:'Fix guide',outputs:'3D outputs',news:'News'}[view]+' · Stereopticon');
   if(view==='outputs'&&!demoBuilt){demoBuilt=true;makeViewer(document.getElementById('demo-viewer'),{demo:true});}
   var m=document.querySelector('.mnav');if(m)m.open=false;
 }
 function route(){
   var h=decodeURIComponent(location.hash.slice(1));
   if(h.indexOf('game-')===0){show('game',h.slice(5));window.scrollTo(0,0);return;}
+  if(h.indexOf('post-')===0){show('post',h.slice(5));window.scrollTo(0,0);return;}
   if(VIEWS.indexOf(h)>=0){show(h);window.scrollTo(0,0);return;}
   show('home');
   if(h){var el=document.getElementById(h);if(el)el.scrollIntoView();}

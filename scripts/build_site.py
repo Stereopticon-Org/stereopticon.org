@@ -1,14 +1,16 @@
-"""Build the site into _site/ from games/*.yml.
+"""Build the site into _site/ from games/*.yml and posts/*.md.
 
     python scripts/build_site.py            build _site/
     python scripts/build_site.py --check    validate only (used on pull requests)
 
 If GITHUB_TOKEN is set, milestone progress for the wiz3D repo is fetched
-into data/github.json so the API page can show release progress bars.
+into data/github.json so the API page can show release progress bars, and
+GitHub releases of the project repos become news posts (see news.py).
 """
 import json, os, shutil, sys, urllib.request
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from gamedata import ROOT, load_games, load_excluded, validate
+import news
 
 ORG = 'Stereopticon-Org'
 MILESTONE_REPOS = ['wiz3D']
@@ -37,10 +39,12 @@ def main():
     games = load_games()
     excluded = load_excluded()
     problems = [p for g in games for p in validate(g)]
+    posts, post_problems = news.load_posts(ROOT)
+    problems += post_problems
     if problems:
         print('\n'.join(problems))
         sys.exit(1)
-    print('%d games, %d excluded, all valid' % (len(games), len(excluded)))
+    print('%d games, %d excluded, %d news posts, all valid' % (len(games), len(excluded), len(posts)))
     if '--check' in sys.argv:
         return
 
@@ -56,6 +60,12 @@ def main():
             shutil.copytree(os.path.join(ROOT, folder), os.path.join(site, folder))
     with open(os.path.join(site, 'data', 'games.json'), 'w', encoding='utf-8') as f:
         json.dump({'games': games, 'excluded': excluded}, f, ensure_ascii=False, separators=(',', ':'))
+    if os.path.isdir(os.path.join(ROOT, 'posts', 'img')):
+        shutil.copytree(os.path.join(ROOT, 'posts', 'img'), os.path.join(site, 'news', 'img'))
+    items = sorted(posts + news.fetch_releases(site), key=lambda p: (p['date'], p['id']), reverse=True)
+    with open(os.path.join(site, 'data', 'news.json'), 'w', encoding='utf-8') as f:
+        json.dump({'items': items}, f, ensure_ascii=False, separators=(',', ':'))
+    news.write_feed(site, items)
     ms = fetch_milestones()
     if ms is not None:
         with open(os.path.join(site, 'data', 'github.json'), 'w', encoding='utf-8') as f:
