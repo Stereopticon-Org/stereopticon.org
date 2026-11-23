@@ -79,7 +79,7 @@ Write the post in Markdown. Images go in posts/img/ and are written as
 ![What the image shows](img/tray-menu.png).
 ```
 
-A post's address is `stereopticon.org/#post-short-name`. There is also an Atom feed at `stereopticon.org/feed.xml`. The site shows no em dashes: any in release notes or posts are turned into spaced en dashes.
+A post's address is `stereopticon.org/#post-short-name`. To keep a release or post off the site without deleting it, add its name (the part after `#post-`) to `posts/_hidden.yml`. There is also an Atom feed at `stereopticon.org/feed.xml`. The site shows no em dashes: any in release notes or posts are turned into spaced en dashes.
 
 ## Release progress
 

@@ -62,7 +62,9 @@ def main():
         json.dump({'games': games, 'excluded': excluded}, f, ensure_ascii=False, separators=(',', ':'))
     if os.path.isdir(os.path.join(ROOT, 'posts', 'img')):
         shutil.copytree(os.path.join(ROOT, 'posts', 'img'), os.path.join(site, 'news', 'img'))
-    items = sorted(posts + news.fetch_releases(site), key=lambda p: (p['date'], p['id']), reverse=True)
+    hidden = news.load_hidden(ROOT)
+    items = [p for p in posts + news.fetch_releases(site) if p['id'] not in hidden]
+    items.sort(key=lambda p: (p['date'], p['id']), reverse=True)
     with open(os.path.join(site, 'data', 'news.json'), 'w', encoding='utf-8') as f:
         json.dump({'items': items}, f, ensure_ascii=False, separators=(',', ':'))
     news.write_feed(site, items)

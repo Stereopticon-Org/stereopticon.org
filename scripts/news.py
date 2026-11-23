@@ -75,6 +75,14 @@ def load_posts(root):
     return posts, problems
 
 
+def load_hidden(root):
+    """IDs listed in posts/_hidden.yml are left off the site."""
+    path = os.path.join(root, 'posts', '_hidden.yml')
+    if not os.path.exists(path):
+        return set()
+    return {str(x).strip() for x in (yaml.safe_load(open(path, encoding='utf-8')) or [])}
+
+
 def _get(url, token, accept='application/vnd.github+json'):
     req = urllib.request.Request(url, headers={'Authorization': 'Bearer ' + token, 'Accept': accept,
                                                'User-Agent': 'stereopticon-site-build'})
